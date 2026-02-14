@@ -306,7 +306,7 @@ const generateWithGemini = async (config, language, apiKey) => {
 
 // --- API Call Logic: Generate Single Page Content ---
 const generatePageContent = async (config, pageTitle, currentTopic, globalStyle, language, apiKey) => {
-  const { styleDesc, targetAudience, includePersona } = config;
+  const { styleDesc, targetAudience, includePersona, content, uploadedFile } = config;
   const langInstruction = language === 'en' ? 'English' : 'Simplified Chinese (简体中文)';
 
   if (!apiKey) throw new Error("API Key Missing");
@@ -321,13 +321,19 @@ const generatePageContent = async (config, pageTitle, currentTopic, globalStyle,
     - Global Style: "${globalStyle.title}" (${globalStyle.content})
     - User Style Preference: "${styleDesc}"
     - Persona Mode: ${includePersona ? "ENABLED. The slide MUST feature the main character. Describe their specific pose/expression/props for this slide based on the content (e.g. 'Character looking thoughtful with hand on chin')." : "DISABLED"}
+    - User Provided Content/Context: "${content}"
 
     TASK:
     Generate content for a single slide with the specific title: "${pageTitle}".
 
+    CRITICAL INSTRUCTION: 
+    1. The core points MUST be strictly based on the User Provided Content (text or uploaded file) and the slide title. 
+    2. Do NOT deviate from the source material. 
+    3. If the source material does not contain specific details for this title, infer logically but remain grounded in the context.
+
     Output MUST be valid JSON with this structure:
     {
-      "corePoints": "Key content points (bullet points preferred) relevant to the title '${pageTitle}'.",
+      "corePoints": "Key content points (bullet points preferred) relevant to the title '${pageTitle}' extracted from source material.",
       "visualElements": "Description of visual elements in ${langInstruction}, consistent with the Global Style.${includePersona ? " MUST include description of character's pose/expression." : ""}",
       "layoutDesign": "Specific layout instructions, consistent with the Global Style.${includePersona ? " MUST reserve space for presenter character." : ""} Ensure layout highlights key vocabulary if Global Style mentions it."
     }
@@ -337,6 +343,26 @@ const generatePageContent = async (config, pageTitle, currentTopic, globalStyle,
     2. Tone: Match the target audience.
   `;
 
+  let contents = [];
+  
+  if (uploadedFile) {
+    const fileBase64 = await fileToBase64(uploadedFile);
+    const isImage = uploadedFile.type.startsWith('image/');
+    const fileInstruction = isImage 
+        ? "IMAGE CONTEXT: Use this image as the primary source of information for the slide content."
+        : "DOCUMENT CONTEXT: Use this document as the primary source of information for the slide content.";
+
+    contents = [{
+      parts: [
+        { text: systemPrompt },
+        { text: fileInstruction },
+        { inlineData: { mimeType: uploadedFile.type, data: fileBase64 } }
+      ]
+    }];
+  } else {
+    contents = [{ parts: [{ text: systemPrompt }] }];
+  }
+
   try {
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`,
@@ -344,7 +370,7 @@ const generatePageContent = async (config, pageTitle, currentTopic, globalStyle,
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          contents: [{ parts: [{ text: systemPrompt }] }],
+          contents: contents,
           generationConfig: { responseMimeType: "application/json" }
         })
       }
