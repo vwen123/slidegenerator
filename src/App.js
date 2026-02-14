@@ -47,7 +47,7 @@ const TRANSLATIONS = {
     stylePresetsTitle: "常用风格快选",
     designStyleLabel: "设计风格与指令",
     designStylePlaceholder: "请描述您想要的设计风格，或点击上方按钮快速选择...",
-    includePersona: "融合特定设定：融入个人形象",
+    includePersona: "融合角色设定",
     includePersonaDesc: "✨ AI 将会在每一页自动预留“讲解员”空间，并调整构图避免遮挡。",
     targetAudience: "目标受众 (Target Audience)",
     targetAudiencePlaceholder: "例如：初中学生、潜在投资人、公司高层管理...",
@@ -94,7 +94,7 @@ const TRANSLATIONS = {
     stylePresetsTitle: "Quick Style Presets",
     designStyleLabel: "Design Style & Instructions",
     designStylePlaceholder: "Describe your desired style or select from above...",
-    includePersona: "Integrate Persona Setting",
+    includePersona: "Integrate Character Setting",
     includePersonaDesc: "✨ AI will reserve space for a 'presenter' on every page and adjust composition.",
     targetAudience: "Target Audience",
     targetAudiencePlaceholder: "E.g., Junior students, Potential Investors, C-Level Execs...",
@@ -201,14 +201,14 @@ const generateWithGemini = async (config, language, apiKey) => {
       "topic": "Creative Main Title",
       "globalStyle": {
         "title": "Style Name",
-        "content": "Detailed description of colors, fonts, and mood."
+        "content": "Detailed description of colors, fonts, and mood.${includePersona ? " MUST include this exact sentence at the end: '以角色为主讲，每一页由它介绍内容。依内容语意自动切换表情/姿势/小道具。'" : ""}"
       },
       "pages": [
         {
           "page": 1,
           "title": "Page Title",
           "corePoints": "Key content points (bullet points preferred). IMPORTANT: If a file (PDF or Image) is uploaded, this MUST be extracted directly from the document's core points.",
-          "visualElements": "Description of visual elements, icons, illustrations, or charts in ${langInstruction}.",
+          "visualElements": "Description of visual elements, icons, illustrations, or charts in ${langInstruction}.${includePersona ? " If Persona Mode is enabled, describe the character's pose/expression/props relevant to this slide." : ""}",
           "layoutDesign": "Specific layout instructions"
         }
       ]
@@ -218,7 +218,7 @@ const generateWithGemini = async (config, language, apiKey) => {
     1. Generate exactly ${pageCount} pages.
     2. Language: ALL JSON values must be in ${langInstruction}.
     3. Style: Adapt to user's style description: "${styleDesc}".
-    4. Persona Mode: ${includePersona ? "ENABLED. Crucial: In 'layoutDesign', you MUST explicitly mention reserving space (e.g., side panel or corner) for a presenter avatar/photo. In 'visualElements', mention that the composition should allow space for a character overlay." : "DISABLED."}
+    4. Persona Mode: ${includePersona ? "ENABLED. The presentation features a main character speaker. The Global Style description MUST end with: '以角色为主讲，每一页由它介绍内容。依内容语意自动切换表情/姿势/小道具。' In 'visualElements' for each page, describe the character's specific pose, expression, or props that match the slide content." : "DISABLED."}
     5. Target Audience: "${targetAudience || "General Audience"}". Adjust the tone, complexity, and visual style to suit this audience perfectly.
     6. Content Source: Use this context: "${content}". 
     ${uploadedFile ? "7. FILE UPLOADED: Use the attached file as the PRIMARY source of truth. Extract key arguments, data points, and structure from it." : "If content is empty, invent a creative topic based on the style."}
@@ -303,7 +303,7 @@ const generatePageContent = async (config, pageTitle, currentTopic, globalStyle,
     - Target Audience: "${targetAudience || "General Audience"}"
     - Global Style: "${globalStyle.title}" (${globalStyle.content})
     - User Style Preference: "${styleDesc}"
-    - Persona Mode: ${includePersona ? "ENABLED" : "DISABLED"}
+    - Persona Mode: ${includePersona ? "ENABLED. The slide MUST feature the main character. Describe their specific pose/expression/props for this slide based on the content (e.g. 'Character looking thoughtful with hand on chin')." : "DISABLED"}
 
     TASK:
     Generate content for a single slide with the specific title: "${pageTitle}".
@@ -311,8 +311,8 @@ const generatePageContent = async (config, pageTitle, currentTopic, globalStyle,
     Output MUST be valid JSON with this structure:
     {
       "corePoints": "Key content points (bullet points preferred) relevant to the title '${pageTitle}'.",
-      "visualElements": "Description of visual elements in ${langInstruction}, consistent with the Global Style.",
-      "layoutDesign": "Specific layout instructions, consistent with the Global Style.${includePersona ? " MUST reserve space for presenter." : ""}"
+      "visualElements": "Description of visual elements in ${langInstruction}, consistent with the Global Style.${includePersona ? " MUST include description of character's pose/expression." : ""}",
+      "layoutDesign": "Specific layout instructions, consistent with the Global Style.${includePersona ? " MUST reserve space for presenter character." : ""}"
     }
 
     CONSTRAINTS:
@@ -570,13 +570,13 @@ const InputStep = ({ config, updateConfig, onGenerate, isGenerating, t, language
             {/* 个人形象融合设定 */}
             <div 
                 onClick={() => updateConfig('includePersona', !config.includePersona)}
-                className={`flex items-start gap-4 p-5 rounded-xl border cursor-pointer transition-all duration-200 ${
+                className={`flex items-center gap-4 p-5 rounded-xl border cursor-pointer transition-all duration-200 ${
                     config.includePersona 
                     ? 'bg-violet-50 border-violet-200 shadow-sm' 
                     : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50'
                 }`}
             >
-                <div className={`mt-1 flex-shrink-0 w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-colors ${
+                <div className={`flex-shrink-0 w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-colors ${
                     config.includePersona 
                     ? 'bg-violet-600 border-violet-600' 
                     : 'bg-white border-slate-300'
@@ -584,15 +584,12 @@ const InputStep = ({ config, updateConfig, onGenerate, isGenerating, t, language
                     {config.includePersona && <Check className="w-4 h-4 text-white stroke-[3]" />}
                 </div>
                 <div>
-                    <div className="flex items-center gap-2 mb-1">
+                    <div className="flex items-center gap-2">
                         <UserCircle2 className={`w-5 h-5 ${config.includePersona ? 'text-violet-600' : 'text-slate-500'}`} />
                         <h4 className={`text-sm font-bold ${config.includePersona ? 'text-violet-900' : 'text-slate-700'}`}>
                             {t.includePersona}
                         </h4>
                     </div>
-                    <p className="text-xs text-slate-500 leading-relaxed">
-                        {t.includePersonaDesc}
-                    </p>
                 </div>
             </div>
 
