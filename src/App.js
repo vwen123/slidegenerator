@@ -146,6 +146,7 @@ const GET_STYLE_PRESETS = (lang) => {
       { id: 11, label: "Natural Organic", value: "Using recycled paper texture, plant elements, dark green and earthy yellow, emphasizing environmental protection, sustainability, and connection with nature." },
       { id: 12, label: "Cyberpunk", value: "High contrast neon colors (purple, cyan, magenta), dark background, Glitch Art, decadent aesthetics of technology and future." },
       { id: 13, label: "Flat Design", value: "No shadows, bright solid color blocks, simple vector icons, modern UI style, clear and efficient information transmission." },
+      { id: 14, label: "Picture Book Therapy", value: "Soft and warm tones, crayon, pastel or collage textures, simple metaphorical imagery, focusing on emotional expression, inner exploration and healing storytelling." },
     ];
   }
   return [
@@ -162,6 +163,7 @@ const GET_STYLE_PRESETS = (lang) => {
     { id: 11, label: "自然有机 (Natural Organic)", value: "使用再生纸纹理、植物元素、墨绿色与土黄色，强调环保、可持续与自然连结。" },
     { id: 12, label: "赛博庞克 (Cyberpunk)", value: "高对比度霓虹色（紫、青、品红），深色背景，故障艺术 (Glitch Art)，科技与未来的颓废美学。" },
     { id: 13, label: "扁平化设计 (Flat Design)", value: "无阴影、明亮的纯色色块、简洁的矢量图标，现代 UI 风格，信息传达清晰高效。" },
+    { id: 14, label: "绘本治愈 (Picture Book Therapy)", value: "柔和温暖的色调，蜡笔、粉笔或拼贴质感，富有隐喻的简单意象，强调情感表达、内心探索与疗愈的故事性。" },
   ];
 };
 
