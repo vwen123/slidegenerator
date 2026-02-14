@@ -613,7 +613,7 @@ const InputStep = ({ config, updateConfig, onGenerate, isGenerating, t, language
                     value={config.pageCount}
                     onChange={(e) => updateConfig('pageCount', parseInt(e.target.value) || 1)}
                     min="1"
-                    max="20"
+                    max="30"
                     className="w-full pl-4 pr-4 py-3 bg-slate-50 border-0 rounded-xl font-semibold text-slate-800 focus:ring-2 focus:ring-violet-500"
                  />
                </div>
