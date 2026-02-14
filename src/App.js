@@ -39,6 +39,8 @@ const TRANSLATIONS = {
     getKeyLink: "去 Google AI Studio 免费申请",
     apiKeySaved: "API Key 已保存",
     apiKeyRequired: "请先输入 API Key 才能开始生成",
+    changeKey: "更换 Key",
+    done: "完成",
     selectStyleTitle: "选择您的简报风格，让AI为您量身打造简报架构",
     stylePresetsTitle: "常用风格快选",
     designStyleLabel: "设计风格与指令",
@@ -82,6 +84,8 @@ const TRANSLATIONS = {
     getKeyLink: "Get one free at Google AI Studio",
     apiKeySaved: "API Key Saved",
     apiKeyRequired: "Please enter API Key to start",
+    changeKey: "Change Key",
+    done: "Done",
     selectStyleTitle: "Select your style, let AI build your presentation structure",
     stylePresetsTitle: "Quick Style Presets",
     designStyleLabel: "Design Style & Instructions",
@@ -378,9 +382,44 @@ const Header = ({ language, setLanguage, t }) => (
 
 const ApiKeyInput = ({ apiKey, setApiKey, t }) => {
     const [showKey, setShowKey] = useState(false);
+    // Initialize editing state: if no key, edit mode is true; if key exists, edit mode is false
+    const [isEditing, setIsEditing] = useState(!apiKey);
+
+    // If apiKey is cleared externally, ensure we go back to edit mode
+    useEffect(() => {
+        if (!apiKey) setIsEditing(true);
+    }, [apiKey]);
     
+    // View Mode: Display when key is set and not editing
+    if (!isEditing && apiKey) {
+        return (
+            <div className="bg-violet-50 border border-violet-100 rounded-2xl p-4 mb-8 flex items-center justify-between animate-fade-in relative overflow-hidden shadow-sm">
+                 <div className="absolute top-0 right-0 w-32 h-32 bg-violet-200 rounded-full blur-3xl opacity-30 -mr-10 -mt-10"></div>
+                 <div className="flex items-center gap-3 relative z-10">
+                    <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center border border-green-200">
+                        <CheckCircle2 className="w-5 h-5 text-green-600" />
+                    </div>
+                    <div>
+                        <div className="text-xs font-bold text-violet-900 uppercase tracking-wider">{t.apiKeyLabel}</div>
+                        <div className="text-sm text-green-600 font-bold flex items-center gap-1.5 mt-0.5">
+                            <CheckCircle2 className="w-4 h-4" />
+                            <span>{t.apiKeySaved}</span>
+                        </div>
+                    </div>
+                </div>
+                <button 
+                    onClick={() => setIsEditing(true)}
+                    className="relative z-10 text-sm font-medium text-slate-500 hover:text-violet-600 bg-white hover:bg-violet-50 border border-slate-200 hover:border-violet-200 px-4 py-2 rounded-lg transition-all"
+                >
+                    {t.changeKey}
+                </button>
+            </div>
+        );
+    }
+
+    // Edit Mode: Display input field
     return (
-        <div className="bg-violet-50 border border-violet-100 rounded-2xl p-6 mb-8 relative overflow-hidden">
+        <div className="bg-violet-50 border border-violet-100 rounded-2xl p-6 mb-8 relative overflow-hidden animate-fade-in">
             <div className="absolute top-0 right-0 w-32 h-32 bg-violet-200 rounded-full blur-3xl opacity-30 -mr-10 -mt-10"></div>
             
             <div className="relative z-10">
@@ -418,10 +457,21 @@ const ApiKeyInput = ({ apiKey, setApiKey, t }) => {
                         </button>
                     </div>
                 </div>
+                
+                {/* Done/Save Button - Only show when key is valid */}
                 {apiKey && apiKey.startsWith("AIza") && (
-                     <div className="mt-2 flex items-center gap-1.5 text-xs text-green-600 font-medium animate-fade-in">
-                        <CheckCircle2 className="w-3.5 h-3.5" />
-                        {t.apiKeySaved}
+                     <div className="mt-4 flex items-center justify-between animate-fade-in">
+                         <div className="flex items-center gap-1.5 text-xs text-green-600 font-medium">
+                            <CheckCircle2 className="w-3.5 h-3.5" />
+                            {t.apiKeySaved}
+                         </div>
+                         <button
+                            onClick={() => setIsEditing(false)}
+                            className="flex items-center gap-2 bg-violet-600 hover:bg-violet-700 text-white text-xs font-bold px-4 py-2 rounded-lg transition-colors shadow-sm"
+                         >
+                            <Check className="w-3 h-3" />
+                            {t.done}
+                         </button>
                      </div>
                 )}
             </div>
