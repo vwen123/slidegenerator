@@ -22,14 +22,21 @@ import {
   Wand2,
   Trash2,
   Globe,
-  Key,          // Added Key icon
-  Eye,          // Added Eye icon
-  EyeOff,       // Added EyeOff icon
-  ExternalLink, // Added ExternalLink icon
-  Save,         // Added Save icon
-  ArrowUp,      // Added ArrowUp icon
-  ArrowDown     // Added ArrowDown icon
+  Key,          
+  Eye,          
+  EyeOff,       
+  ExternalLink, 
+  Save,         
+  ArrowUp,      
+  ArrowDown,
+  BookOpen,     
+  List,         
+  Target        
 } from 'lucide-react';
+
+// --- Configuration ---
+// 在此处填入您的 API Key。如果留空，系统将使用“模拟数据”进行演示。
+const apiKey = ""; 
 
 // --- Translations ---
 const TRANSLATIONS = {
@@ -43,23 +50,30 @@ const TRANSLATIONS = {
     apiKeyRequired: "请先输入 API Key 才能开始生成",
     changeKey: "更换 Key",
     done: "完成",
-    selectStyleTitle: "选择您的简报风格，让AI为您量身打造简报架构",
-    stylePresetsTitle: "常用风格快选",
-    designStyleLabel: "设计风格与指令",
-    designStylePlaceholder: "请描述您想要的设计风格，或点击上方按钮快速选择...",
+    selectStyleTitle: "1. 设定简报风格与架构",
+    stylePresetsTitle: "设计风格 (Visual Style)",
+    designStyleLabel: "设计风格描述",
+    designStylePlaceholder: "请描述您想要的设计风格...",
+    structureLabel: "简报叙事架构 (Presentation Structure)",
+    structureNarrative: "叙事故事",
+    structureNarrativeDesc: "起承转合，情感共鸣，适合演讲",
+    structureDetailed: "内容详细",
+    structureDetailedDesc: "完整资讯，数据佐证，适合报告",
+    structureKeypoint: "重点演示",
+    structureKeypointDesc: "极简核心，视觉冲击，适合路演",
     includePersona: "融合角色设定",
     includePersonaDesc: "✨ AI 将会在每一页自动预留“讲解员”空间，并调整构图避免遮挡。",
     targetAudience: "目标受众 (Target Audience)",
     targetAudiencePlaceholder: "例如：初中学生、潜在投资人、公司高层管理...",
     pageCount: "预计页数",
-    contentLabel: "内容文本 / 资料贴上",
+    contentLabel: "2. 输入内容或上传资料",
     contentPlaceholder: "请贴上您的演讲稿、文章内容或大纲。AI 将以此生成简报结构...",
     uploadLabel: "上传参考图片或 PDF (选填)",
     uploadButton: "选择档案 (图片/PDF)",
     uploadHint: "提示：如果是图片，AI 也可提取核心重点并分析视觉风格！",
     generateButton: "开始分析与生成简报",
     generating: "正在呼叫 Gemini API...",
-    generatingDesc: "正在分析文本、解析风格并规划简报架构",
+    generatingDesc: "正在根据选择的架构重组内容逻辑...",
     resultTitle: "Gemini 生成结果",
     downloadButton: "下载文字档 (.txt)",
     corePoints: "核心重点",
@@ -79,7 +93,7 @@ const TRANSLATIONS = {
     styleSettingApplied: "此设定已由 Gemini 优化并应用于下列所有页面的设计与 AI 生图指令中",
     moveUp: "上移",
     moveDown: "下移",
-    personaStyleTitle: "融合角色设定" 
+    personaStyleTitle: "融合角色设定"
   },
   en: {
     appTitle: "Presentation Outline Generator",
@@ -91,23 +105,30 @@ const TRANSLATIONS = {
     apiKeyRequired: "Please enter API Key to start",
     changeKey: "Change Key",
     done: "Done",
-    selectStyleTitle: "Select your style, let AI build your presentation structure",
-    stylePresetsTitle: "Quick Style Presets",
-    designStyleLabel: "Design Style & Instructions",
-    designStylePlaceholder: "Describe your desired style or select from above...",
+    selectStyleTitle: "1. Style & Structure Settings",
+    stylePresetsTitle: "Visual Style",
+    designStyleLabel: "Style Description",
+    designStylePlaceholder: "Describe your desired style...",
+    structureLabel: "Presentation Structure",
+    structureNarrative: "Narrative Story",
+    structureNarrativeDesc: "Hero's journey, emotional flow",
+    structureDetailed: "Detailed Content",
+    structureDetailedDesc: "Comprehensive data, report style",
+    structureKeypoint: "Key Points",
+    structureKeypointDesc: "Minimalist, high impact pitch",
     includePersona: "Integrate Character Setting",
     includePersonaDesc: "✨ AI will reserve space for a 'presenter' on every page and adjust composition.",
     targetAudience: "Target Audience",
     targetAudiencePlaceholder: "E.g., Junior students, Potential Investors, C-Level Execs...",
     pageCount: "Estimated Pages",
-    contentLabel: "Content Text / Paste Data",
+    contentLabel: "2. Content Source",
     contentPlaceholder: "Paste your speech, article, or outline here. AI will structure it...",
     uploadLabel: "Upload Reference Image or PDF (Optional)",
     uploadButton: "Choose File (Image/PDF)",
     uploadHint: "Tip: AI can extract core points from images and analyze visual style!",
     generateButton: "Analyze & Generate Presentation",
     generating: "Calling Gemini API...",
-    generatingDesc: "Analyzing text, parsing style, and planning structure...",
+    generatingDesc: "Restructuring content based on selected mode...",
     resultTitle: "Gemini Result",
     downloadButton: "Download Text (.txt)",
     corePoints: "Core Points",
@@ -145,7 +166,7 @@ const GET_STYLE_PRESETS = (lang) => {
       { id: 8, label: "Japanese Realistic", value: "Minimalist, whitespace, high-quality real scene photography, wood tones, emphasizing details and reality, clean like Muji." },
       { id: 9, label: "Retro Nostalgic", value: "Low-fi texture, noise, 80s/90s color scheme, retro serif fonts, old newspaper or film filter effects." },
       { id: 10, label: "Playful & Childlike", value: "High saturation primary colors (red, yellow, blue), simple geometric shapes, doodle style, full of vitality and fun." },
-    { id: 11, label: "自然有机 (Natural Organic)", value: "Using recycled paper texture, plant elements, dark green and earthy yellow, emphasizing environmental protection, sustainability, and connection with nature." },
+    { id: 11, label: "Natural Organic", value: "Using recycled paper texture, plant elements, dark green and earthy yellow, emphasizing environmental protection, sustainability, and connection with nature." },
     { id: 12, label: "Cyberpunk", value: "High contrast neon colors (purple, cyan, magenta), dark background, Glitch Art, decadent aesthetics of technology and future." },
     { id: 13, label: "Flat Design", value: "No shadows, bright solid color blocks, simple vector icons, modern UI style, clear and efficient information transmission." },
     { id: 14, label: "Picture Book Therapy", value: "Soft and warm tones, simple metaphorical imagery, focusing on emotional expression, inner exploration and healing storytelling." },
@@ -154,7 +175,7 @@ const GET_STYLE_PRESETS = (lang) => {
   return [
     { id: 1, label: "吉卜力自然风 (Ghibli Natural)", value: "吉卜力动画风格，高饱和度的蓝天白云、茂密的绿色植被、手绘水彩质感，营造清新、治愈、宏大的自然氛围。" },
     { id: 2, label: "游戏任务地图 (Game Quest Map)", value: "ISO 2.5D 视角，游戏 UI 界面元素，任务节点路径，冒险与探索感，像素或矢量风格。" },
-    { id: 3, label: "漫画风格（突出生字） (Comic/Manga)", value: "黑白或波普色彩，使用对话气泡、速度线、粗体大字强调关键词，视觉冲击力强。" },
+    { id: 3, label: "漫画风格 (Comic/Manga)", value: "黑白或波普色彩，使用对话气泡、速度线、粗体大字强调关键词，视觉冲击力强。" },
     { id: 4, label: "水彩风格 (Watercolor)", value: "水痕晕染、透明感、柔和的边缘、艺术气息，适合表现文艺、感性的主题。" },
     { id: 5, label: "粉彩风格 (Pastel)", value: "低饱和度的马卡龙色系（粉红、薄荷绿、淡紫），梦幻、轻盈、可爱的视觉感受。" },
     { id: 6, label: "手绘插画 (Hand-drawn)", value: "温暖亲切，使用手绘风格的图标与边框，色彩活泼，线条自然不拘束。" },
@@ -168,6 +189,31 @@ const GET_STYLE_PRESETS = (lang) => {
     { id: 14, label: "绘本治愈 (Picture Book Therapy)", value: "柔和温暖的色调，富有隐喻的简单意象，强调情感表达、内心探索与疗愈的故事性。" },
   ];
 };
+
+// --- Structure Options ---
+const GET_STRUCTURE_OPTIONS = (lang, t) => [
+    { 
+      id: 'story', 
+      label: t.structureNarrative, 
+      desc: t.structureNarrativeDesc,
+      icon: <BookOpen className="w-5 h-5" />,
+      color: "bg-amber-100 text-amber-700 border-amber-200"
+    },
+    { 
+      id: 'detail', 
+      label: t.structureDetailed, 
+      desc: t.structureDetailedDesc,
+      icon: <FileText className="w-5 h-5" />, 
+      color: "bg-blue-100 text-blue-700 border-blue-200"
+    },
+    { 
+      id: 'keypoint', 
+      label: t.structureKeypoint, 
+      desc: t.structureKeypointDesc,
+      icon: <Target className="w-5 h-5" />,
+      color: "bg-rose-100 text-rose-700 border-rose-200"
+    }
+];
 
 // --- Helper: Convert File to Base64 for Gemini Multimodal ---
 const fileToBase64 = (file) => {
@@ -188,13 +234,60 @@ const normalizeContent = (content) => {
   return String(content);
 };
 
+// --- MOCK DATA GENERATOR ---
+const getMockPresentation = (config) => {
+    return {
+        topic: "（演示）AI 对未来教育的影响",
+        globalStyle: {
+            title: "未来科技感 (演示)",
+            content: "本演示采用高科技感的深蓝与霓虹色调，旨在展示 API 未连接时的模拟效果。字体采用现代无衬线体，强调简洁与力度。"
+        },
+        pages: Array.from({ length: config.pageCount }).map((_, i) => ({
+            page: i + 1,
+            title: `第 ${i+1} 章：${i === 0 ? 'AI 的崛起' : i === 1 ? '个性化学习' : '未来展望'} (模拟)`,
+            corePoints: "• 这是一个模拟生成的重点。\n• 因为未检测到 API Key，系统显示此默认内容。\n• 请在代码中配置 apiKey 以启用真实生成。",
+            visualElements: "画面中央是一个发光的 AI 大脑，周围环绕着数据流，背景是深邃的宇宙。",
+            layoutDesign: "左侧为大标题与核心观点，右侧预留大面积配图区域。"
+        }))
+    };
+};
+
+const getMockPageContent = () => {
+    return {
+        corePoints: "• (模拟内容) 这是一个单页生成的示例。\n• 点击生成按钮可重新触发。\n• 真实模式下，这里会根据您的标题生成具体内容。",
+        visualElements: "（模拟）角色正在黑板前书写复杂的公式，表情专注。",
+        layoutDesign: "（模拟）建议使用三分法构图，将角色放置在右侧三分之一处。"
+    };
+};
+
 // --- API Call Logic: Generate Full Presentation ---
 const generateWithGemini = async (config, language, apiKey) => {
-  const { styleDesc, pageCount, content, uploadedFile, includePersona, targetAudience } = config;
+  const { styleDesc, pageCount, content, uploadedFile, includePersona, targetAudience, structureType } = config;
 
-  if (!apiKey) throw new Error("API Key Missing");
+  // Mock Mode Check
+  if (!apiKey) {
+      console.warn("No API Key found. Returning Mock Data.");
+      await new Promise(resolve => setTimeout(resolve, 1500)); // Fake delay
+      return getMockPresentation(config);
+  }
 
   const langInstruction = language === 'en' ? 'English' : 'Simplified Chinese (简体中文)';
+
+  // Logic to build specific instructions based on structureType
+  let structureInstruction = "";
+  switch (structureType) {
+      case 'story':
+          structureInstruction = "STRUCTURE: NARRATIVE STORY (Storytelling). Structure the presentation like a journey or a movie. Start with a hook/conflict, build up the context, present the solution/climax, and end with a resolution/call to action. Focus on emotional flow and connection.";
+          break;
+      case 'detail':
+          structureInstruction = "STRUCTURE: DETAILED ANALYSIS (Academic/Report). Focus on comprehensive information, data, evidence, and logical hierarchy. Each page should contain substantial information, bullet points with sub-details, and clear analysis. Ideal for reading or detailed reports.";
+          break;
+      case 'keypoint':
+          structureInstruction = "STRUCTURE: KEY POINTS DEMO (Pitch/Steve Jobs style). Focus on EXTREME MINIMALISM. Rule of Three. One big idea per slide. Very few words, high impact. Prioritize punchy slogans and impactful visuals over detailed text.";
+          break;
+      default:
+          structureInstruction = "STRUCTURE: Standard Presentation structure.";
+  }
 
   const systemPrompt = `
     You are a professional Presentation Designer and AI Art Director.
@@ -222,7 +315,10 @@ const generateWithGemini = async (config, language, apiKey) => {
     1. Generate exactly ${pageCount} pages.
     2. Language: ALL JSON values must be in ${langInstruction}.
     
-    3. **Design System & Art Direction (CRITICAL)**: 
+    3. **STRUCTURE MODE (${structureType})**:
+       ${structureInstruction}
+
+    4. **Design System & Art Direction (CRITICAL)**: 
        - You are not just picking a template, you are the Art Director.
        - Analyze the **User Style** ("${styleDesc}") AND the **Content Topic** ("${content}").
        - Create a unique "Global Style" that bridges them.
@@ -235,10 +331,10 @@ const generateWithGemini = async (config, language, apiKey) => {
        
        - Example Logic: If user picks 'Comic' and content is 'Urban Safety', generate 'Urban Detective Comic' style with neon colors and dramatic shadows. If user picks 'Picture Book' and content is 'Mental Health', generate 'Pastel Healing' style.
 
-    4. Persona Mode: ${includePersona ? "ENABLED. The presentation features a main character speaker. The Global Style description MUST end with: '以角色为主讲，每一页由它介绍内容。依内容语意自动切换表情/姿势/小道具。' In 'visualElements' for each page, describe the character's specific pose, expression, or props that match the slide content." : "DISABLED."}
-    5. Target Audience: "${targetAudience || "General Audience"}". Adjust the tone, complexity, and visual style to suit this audience perfectly.
-    6. Content Source: Use this context: "${content}". 
-    ${uploadedFile ? "7. FILE UPLOADED: Use the attached file as the PRIMARY source of truth. Extract key arguments, data points, and structure from it." : "If content is empty, invent a creative topic based on the style."}
+    5. Persona Mode: ${includePersona ? "ENABLED. The presentation features a main character speaker. The Global Style description MUST end with: '以角色为主讲，每一页由它介绍内容。依内容语意自动切换表情/姿势/小道具。' In 'visualElements' for each page, describe the character's specific pose, expression, or props that match the slide content." : "DISABLED."}
+    6. Target Audience: "${targetAudience || "General Audience"}". Adjust the tone, complexity, and visual style to suit this audience perfectly.
+    7. Content Source: Use this context: "${content}". 
+    ${uploadedFile ? "8. FILE UPLOADED: Use the attached file as the PRIMARY source of truth. Extract key arguments, data points, and structure from it." : "If content is empty, invent a creative topic based on the style."}
   `;
 
   let contents = [];
@@ -305,35 +401,58 @@ const generateWithGemini = async (config, language, apiKey) => {
 };
 
 // --- API Call Logic: Generate Single Page Content ---
-const generatePageContent = async (config, pageTitle, currentTopic, globalStyle, language, apiKey) => {
-  const { styleDesc, targetAudience, includePersona, content, uploadedFile } = config;
+const generatePageContent = async (config, pageTitle, pageCorePoints, currentTopic, globalStyle, language, apiKey) => {
+  const { styleDesc, targetAudience, includePersona, content, uploadedFile, structureType } = config;
   const langInstruction = language === 'en' ? 'English' : 'Simplified Chinese (简体中文)';
 
   if (!apiKey) throw new Error("API Key Missing");
 
+  // Logic to build specific instructions based on structureType for SINGLE PAGE
+  let structureInstruction = "";
+  switch (structureType) {
+      case 'story':
+          structureInstruction = "Tone: Storytelling, emotional, narrative flow.";
+          break;
+      case 'detail':
+          structureInstruction = "Tone: Academic, detailed, data-driven, comprehensive.";
+          break;
+      case 'keypoint':
+          structureInstruction = "Tone: Punchy, minimalist, impactful, rule of three.";
+          break;
+      default:
+          structureInstruction = "Tone: Standard presentation.";
+  }
+
+  const userPointsContext = pageCorePoints && pageCorePoints.trim() !== "" 
+    ? `User provided specific points for this slide: "${pageCorePoints}".`
+    : "User has not provided specific points for this slide, derive from Title and Source Material.";
+
   const systemPrompt = `
     You are a professional Presentation Designer.
-    The user is adding a NEW SLIDE to an existing presentation.
+    The user is adding a NEW SLIDE or REFINING a slide in an existing presentation.
     
     CONTEXT:
     - Presentation Topic: "${currentTopic}"
     - Target Audience: "${targetAudience || "General Audience"}"
     - Global Style: "${globalStyle.title}" (${globalStyle.content})
     - User Style Preference: "${styleDesc}"
+    - Structure Mode: ${structureType} (${structureInstruction})
     - Persona Mode: ${includePersona ? "ENABLED. The slide MUST feature the main character. Describe their specific pose/expression/props for this slide based on the content (e.g. 'Character looking thoughtful with hand on chin')." : "DISABLED"}
-    - User Provided Content/Context: "${content}"
+    - User Provided Global Content/Context: "${content}"
+    - Slide Title: "${pageTitle}"
+    - Slide Specific Input: ${userPointsContext}
 
     TASK:
-    Generate content for a single slide with the specific title: "${pageTitle}".
+    Generate/Refine content for a single slide.
 
     CRITICAL INSTRUCTION: 
-    1. The core points MUST be strictly based on the User Provided Content (text or uploaded file) and the slide title. 
-    2. Do NOT deviate from the source material. 
-    3. If the source material does not contain specific details for this title, infer logically but remain grounded in the context.
+    1. IF 'User provided specific points' exists: Use them as the ABSOLUTE FOUNDATION. Refine the text for impact (bullet points) matching the Structure Mode but do NOT change the core meaning. Generate 'visualElements' and 'layoutDesign' that specifically visualize THESE points.
+    2. IF 'User provided specific points' is empty: Generate core points strictly based on the User Provided Global Content (text or uploaded file) and the Slide Title. Do NOT deviate from the source material.
+    3. 'visualElements' and 'layoutDesign' must always be generated/regenerated based on the final core points.
 
     Output MUST be valid JSON with this structure:
     {
-      "corePoints": "Key content points (bullet points preferred) relevant to the title '${pageTitle}' extracted from source material.",
+      "corePoints": "Key content points (bullet points preferred). If user provided points, refine them. If not, extract from source.",
       "visualElements": "Description of visual elements in ${langInstruction}, consistent with the Global Style.${includePersona ? " MUST include description of character's pose/expression." : ""}",
       "layoutDesign": "Specific layout instructions, consistent with the Global Style.${includePersona ? " MUST reserve space for presenter character." : ""} Ensure layout highlights key vocabulary if Global Style mentions it."
     }
@@ -531,6 +650,7 @@ const ApiKeyInput = ({ apiKey, setApiKey, t }) => {
 const InputStep = ({ config, updateConfig, onGenerate, isGenerating, t, language, apiKey, setApiKey }) => {
   const fileInputRef = useRef(null);
   const stylePresets = GET_STYLE_PRESETS(language);
+  const structureOptions = GET_STRUCTURE_OPTIONS(language, t);
 
   const handleFileClick = () => {
     fileInputRef.current.click();
@@ -576,6 +696,7 @@ const InputStep = ({ config, updateConfig, onGenerate, isGenerating, t, language
         </div>
 
         <div className="space-y-8">
+            {/* Style Presets */}
             <div>
                  <label className="block text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
                     <Sparkles className="w-4 h-4 text-violet-500" />
@@ -600,6 +721,7 @@ const InputStep = ({ config, updateConfig, onGenerate, isGenerating, t, language
                  </div>
             </div>
 
+            {/* Design Style Description */}
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-2">{t.designStyleLabel}</label>
               <textarea
@@ -610,6 +732,37 @@ const InputStep = ({ config, updateConfig, onGenerate, isGenerating, t, language
               />
             </div>
             
+            {/* NEW: Structure Type Selection */}
+            <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
+                    <Layout className="w-4 h-4 text-violet-500" />
+                    {t.structureLabel}
+                </label>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {structureOptions.map((option) => (
+                        <button
+                            key={option.id}
+                            onClick={() => updateConfig('structureType', option.id)}
+                            className={`flex flex-col items-start p-4 rounded-xl border transition-all ${
+                                config.structureType === option.id
+                                ? `${option.color.replace('text-', 'border-').replace('bg-', 'bg-opacity-20 ')} shadow-md ring-1 ring-offset-1 ring-transparent`
+                                : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                            } ${config.structureType === option.id ? 'ring-violet-500' : ''}`}
+                        >
+                            <div className={`p-2 rounded-lg mb-3 ${config.structureType === option.id ? 'bg-white shadow-sm' : 'bg-slate-100'}`}>
+                                {option.icon}
+                            </div>
+                            <h3 className={`text-sm font-bold mb-1 ${config.structureType === option.id ? 'text-slate-900' : 'text-slate-700'}`}>
+                                {option.label}
+                            </h3>
+                            <p className="text-xs text-slate-500 text-left leading-relaxed">
+                                {option.desc}
+                            </p>
+                        </button>
+                    ))}
+                </div>
+            </div>
+
             {/* 个人形象融合设定 */}
             <div 
                 onClick={() => updateConfig('includePersona', !config.includePersona)}
@@ -636,10 +789,18 @@ const InputStep = ({ config, updateConfig, onGenerate, isGenerating, t, language
                 </div>
             </div>
 
+            {/* Content Section Header */}
+            <div className="mt-8 pt-6 border-t border-slate-100 flex items-center gap-3">
+                <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600 shrink-0">
+                    <FileText className="w-6 h-6" />
+                </div>
+                <h2 className="text-xl font-bold text-slate-800">{t.contentLabel}</h2>
+            </div>
+
             {/* 新增：目标受众 */}
             <div>
                <label className="block text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
-                   <Users className="w-4 h-4 text-violet-500" />
+                   <Users className="w-4 h-4 text-blue-500" />
                    {t.targetAudience}
                </label>
                <input 
@@ -647,7 +808,7 @@ const InputStep = ({ config, updateConfig, onGenerate, isGenerating, t, language
                   value={config.targetAudience || ''}
                   onChange={(e) => updateConfig('targetAudience', e.target.value)}
                   placeholder={t.targetAudiencePlaceholder}
-                  className="w-full p-4 bg-slate-50 border-0 rounded-xl text-slate-700 placeholder:text-slate-400 focus:ring-2 focus:ring-violet-500 focus:bg-white transition-all shadow-inner"
+                  className="w-full p-4 bg-slate-50 border-0 rounded-xl text-slate-700 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all shadow-inner"
                />
             </div>
 
@@ -660,18 +821,18 @@ const InputStep = ({ config, updateConfig, onGenerate, isGenerating, t, language
                     onChange={(e) => updateConfig('pageCount', parseInt(e.target.value) || 1)}
                     min="1"
                     max="30"
-                    className="w-full pl-4 pr-4 py-3 bg-slate-50 border-0 rounded-xl font-semibold text-slate-800 focus:ring-2 focus:ring-violet-500"
+                    className="w-full pl-4 pr-4 py-3 bg-slate-50 border-0 rounded-xl font-semibold text-slate-800 focus:ring-2 focus:ring-blue-500"
                  />
                </div>
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">{t.contentLabel}</label>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">{t.contentLabel.split(' ')[2] || "输入内容"}</label>
               <textarea
                 value={config.content}
                 onChange={(e) => updateConfig('content', e.target.value)}
                 placeholder={t.contentPlaceholder}
-                className="w-full h-40 p-4 bg-slate-50 border-0 rounded-xl text-slate-700 placeholder:text-slate-400 focus:ring-2 focus:ring-violet-500 focus:bg-white transition-all resize-none shadow-inner"
+                className="w-full h-40 p-4 bg-slate-50 border-0 rounded-xl text-slate-700 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all resize-none shadow-inner"
               />
             </div>
 
@@ -707,7 +868,7 @@ const InputStep = ({ config, updateConfig, onGenerate, isGenerating, t, language
                     )}
                 </div>
                 <p className="mt-2 text-xs text-slate-400 flex items-center gap-1">
-                    <Sparkles className="w-3 h-3 text-violet-400" /> 
+                    <Sparkles className="w-3 h-3 text-blue-400" /> 
                     {t.uploadHint}
                 </p>
             </div>
@@ -843,9 +1004,11 @@ const ResultStep = ({ resultData, setResultData, onReset, config, t, language, a
     setGeneratingPages(prev => ({ ...prev, [index]: true }));
 
     try {
+        // Pass page.corePoints to the generator
         const generatedContent = await generatePageContent(
             config, 
             page.title, 
+            page.corePoints, // Pass user edited core points
             resultData.topic, 
             resultData.globalStyle,
             language,
@@ -923,273 +1086,3 @@ const ResultStep = ({ resultData, setResultData, onReset, config, t, language, a
         <div className="relative z-10">
             <div className="flex items-center gap-2 mb-4 text-violet-300">
                 <Palette className="w-5 h-5" />
-                <h3 className="font-bold text-lg">
-                    {config.includePersona ? t.personaStyleTitle : resultData.globalStyle.title}
-                </h3>
-            </div>
-            <div className="bg-slate-800/50 p-2 rounded-xl border border-slate-700/50 backdrop-blur-sm">
-                <EditableText
-                    isTextarea
-                    value={resultData.globalStyle.content}
-                    onChange={(val) => handleGlobalStyleChange('content', val)}
-                    className="text-slate-300 leading-relaxed text-sm focus:text-slate-900 focus:bg-white"
-                />
-            </div>
-            {/* <div className="mt-4 text-xs text-slate-500 flex items-center gap-1">
-                <Sparkles className="w-3 h-3 text-yellow-500" />
-                {t.styleSettingApplied}
-            </div> 
-            */}
-        </div>
-      </div>
-
-      {/* Pages List */}
-      <div className="space-y-8">
-        {resultData.pages.map((page, index) => (
-            <div key={index} className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-lg transition-shadow duration-300 group">
-                {/* Page Header */}
-                <div className="px-6 py-4 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-50/50">
-                    <div className="flex items-center gap-3 w-full">
-                        <span className="text-2xl font-black text-violet-600 font-mono whitespace-nowrap">Page {page.page}</span>
-                        <div className="w-px h-6 bg-slate-300 hidden md:block"></div>
-                        <div className="flex-1">
-                             <EditableText 
-                                value={page.title} 
-                                onChange={(val) => handlePageChange(index, 'title', val)}
-                                className={`text-xl font-bold transition-colors ${warningIndex === index ? 'text-red-500 placeholder:text-red-300' : 'text-slate-800 placeholder-slate-400'}`}
-                                placeholder={warningIndex === index ? t.enterTitleWarning : t.pageTitlePlaceholder}
-                             />
-                        </div>
-                    </div>
-                    
-                    <div className="flex items-center gap-2">
-                        {/* Move Up/Down Buttons */}
-                        <div className="flex items-center mr-2 border-r border-slate-200 pr-2 gap-1">
-                            <button
-                                onClick={() => handleMovePage(index, -1)}
-                                disabled={index === 0}
-                                className="p-1.5 rounded-lg text-slate-400 hover:text-violet-600 hover:bg-violet-50 disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-slate-400 transition-all"
-                                title={t.moveUp}
-                            >
-                                <ArrowUp className="w-4 h-4" />
-                            </button>
-                            <button
-                                onClick={() => handleMovePage(index, 1)}
-                                disabled={index === resultData.pages.length - 1}
-                                className="p-1.5 rounded-lg text-slate-400 hover:text-violet-600 hover:bg-violet-50 disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-slate-400 transition-all"
-                                title={t.moveDown}
-                            >
-                                <ArrowDown className="w-4 h-4" />
-                            </button>
-                        </div>
-
-                        {/* Single Page Generation Button */}
-                        <button 
-                            onClick={() => handleGeneratePageContent(index)}
-                            disabled={generatingPages[index]}
-                            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed ${
-                                warningIndex === index 
-                                ? 'bg-red-100 text-red-600 animate-pulse' 
-                                : 'bg-violet-100 hover:bg-violet-200 text-violet-700'
-                            }`}
-                            title="根据标题自动生成内容"
-                        >
-                            {generatingPages[index] ? <Loader2 className="w-4 h-4 animate-spin" /> : <Wand2 className="w-4 h-4" />}
-                            {generatingPages[index] ? t.generatingButton : warningIndex === index ? t.enterTitleWarning : t.aiGenerateButton}
-                        </button>
-                        
-                        {/* Delete Button (Double Click Logic) */}
-                        <button
-                            onClick={() => {
-                                if (deleteConfirmIndex === index) {
-                                    handleDeletePage(index);
-                                } else {
-                                    setDeleteConfirmIndex(index);
-                                    setTimeout(() => setDeleteConfirmIndex(null), 3000); // Auto reset
-                                }
-                            }}
-                            className={`p-2 rounded-lg transition-all duration-200 flex items-center gap-2 ${
-                                deleteConfirmIndex === index 
-                                ? "bg-red-500 text-white hover:bg-red-600 shadow-sm px-3" 
-                                : "text-slate-400 hover:text-red-500 hover:bg-red-50"
-                            }`}
-                            title={deleteConfirmIndex === index ? "Again to Confirm" : "Delete Page"}
-                        >
-                            <Trash2 className="w-4 h-4" />
-                            {deleteConfirmIndex === index && <span className="text-xs font-bold whitespace-nowrap">{t.deleteConfirm}</span>}
-                        </button>
-                    </div>
-                </div>
-
-                <div className="p-6 space-y-6">
-                    {/* Core Points (was Summary) */}
-                    <div>
-                        <h4 className="text-xs font-bold text-slate-400 uppercase mb-2">{t.corePoints}</h4>
-                        <div className="bg-slate-50 p-2 rounded-xl border border-slate-100">
-                             <EditableText 
-                                isTextarea
-                                value={page.corePoints} 
-                                onChange={(val) => handlePageChange(index, 'corePoints', val)}
-                                className="text-slate-700 leading-relaxed text-base min-h-[80px]"
-                                placeholder={t.corePointsPlaceholder}
-                             />
-                        </div>
-                    </div>
-
-                    {/* Visual Elements (was Image Prompt) - MOVED TO MIDDLE */}
-                    <div className="bg-slate-900 rounded-xl p-3 border border-slate-800">
-                         <div className="flex items-center gap-2 mb-2 text-green-400 px-2">
-                            <ImageIcon className="w-4 h-4" />
-                            <h4 className="font-bold text-xs uppercase tracking-wider flex items-center gap-2">
-                                {t.visualElements}
-                                <span className="text-[10px] bg-green-800 text-green-200 px-1 rounded">{t.generatedByGemini}</span>
-                            </h4>
-                        </div>
-                        <EditableText 
-                            isTextarea
-                            value={page.visualElements} 
-                            onChange={(val) => handlePageChange(index, 'visualElements', val)}
-                            className="text-green-300 font-mono text-sm leading-relaxed break-words focus:text-slate-900 focus:bg-white min-h-[60px]"
-                            placeholder={t.visualElementsPlaceholder}
-                        />
-                    </div>
-
-                    {/* Layout Design (was Layout Guide) - MOVED TO BOTTOM */}
-                    <div className="bg-blue-50 rounded-xl p-3 border border-blue-100">
-                        <div className="flex items-center gap-2 mb-2 text-blue-700 px-2">
-                            <Layout className="w-5 h-5" />
-                            <h4 className="font-bold text-sm">{t.layoutDesign}</h4>
-                        </div>
-                        <EditableText 
-                            isTextarea
-                            value={page.layoutDesign} 
-                            onChange={(val) => handlePageChange(index, 'layoutDesign', val)}
-                            className="text-slate-700 text-sm leading-relaxed focus:bg-white/90 min-h-[60px]"
-                            placeholder={t.layoutDesignPlaceholder}
-                        />
-                    </div>
-                </div>
-            </div>
-        ))}
-
-        {/* Add Page Button */}
-        <button
-            onClick={handleAddPage}
-            className="w-full py-4 border-2 border-dashed border-slate-300 rounded-2xl flex items-center justify-center gap-2 text-slate-500 hover:text-violet-600 hover:border-violet-400 hover:bg-violet-50 transition-all font-medium"
-        >
-            <Plus className="w-5 h-5" />
-            {t.addPage}
-        </button>
-      </div>
-
-      {/* Footer Action */}
-      <div className="mt-10 flex justify-center">
-        <button 
-            onClick={onReset}
-            className="text-slate-500 hover:text-violet-600 font-medium flex items-center gap-2 px-6 py-3 rounded-xl hover:bg-white transition-all"
-        >
-            重新设计一个专案 <ArrowRight className="w-4 h-4" />
-        </button>
-      </div>
-
-    </div>
-  );
-};
-
-export default function App() {
-  const [step, setStep] = useState('input'); // input, result
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [language, setLanguage] = useState('zh'); // 'zh' or 'en'
-  const [config, setConfig] = useState({
-      styleDesc: "",
-      pageCount: 5,
-      content: "",
-      uploadedFile: null,
-      includePersona: false,
-      targetAudience: "" 
-  });
-  const [resultData, setResultData] = useState(null);
-
-  // --- API Key State Management with LocalStorage ---
-  const [apiKey, setApiKey] = useState(() => {
-      // Check localStorage on initial load
-      if (typeof window !== 'undefined') {
-          return localStorage.getItem('gemini_api_key') || '';
-      }
-      return '';
-  });
-
-  // Save to localStorage whenever apiKey changes
-  useEffect(() => {
-      if (typeof window !== 'undefined') {
-          localStorage.setItem('gemini_api_key', apiKey);
-      }
-  }, [apiKey]);
-
-
-  const t = TRANSLATIONS[language];
-
-  const updateConfig = (key, value) => {
-      setConfig(prev => ({ ...prev, [key]: value }));
-  };
-
-  const handleGenerate = async () => {
-    if (!apiKey) {
-        alert(language === 'zh' ? "请输入 API Key" : "Please enter API Key");
-        return;
-    }
-
-    setIsGenerating(true);
-    
-    try {
-        // Pass language and API Key to generator
-        const generatedData = await generateWithGemini(config, language, apiKey);
-        setResultData(generatedData);
-        setStep('result');
-        window.scrollTo(0, 0);
-    } catch (error) {
-        console.error("Failed to generate:", error);
-        alert(language === 'zh' 
-            ? `生成失败: ${error.message}` 
-            : `Generation failed: ${error.message}`);
-    } finally {
-        setIsGenerating(false);
-    }
-  };
-
-  return (
-    <div className="min-h-screen bg-[#F8FAFC] font-sans selection:bg-violet-200 selection:text-violet-900">
-      <Header language={language} setLanguage={setLanguage} t={t} />
-      
-      <main>
-        {step === 'input' && (
-            <InputStep 
-                config={config} 
-                updateConfig={updateConfig} 
-                onGenerate={handleGenerate} 
-                isGenerating={isGenerating}
-                t={t}
-                language={language}
-                apiKey={apiKey}
-                setApiKey={setApiKey}
-            />
-        )}
-        {step === 'result' && resultData && (
-            <ResultStep 
-                resultData={resultData} 
-                setResultData={setResultData}
-                onReset={() => setStep('input')}
-                config={config} 
-                t={t}
-                language={language}
-                apiKey={apiKey}
-            />
-        )}
-      </main>
-
-      <footer className="py-8 text-center text-slate-400 text-sm">
-        {t.footerText}
-      </footer>
-    </div>
-  );
-}
