@@ -1086,3 +1086,269 @@ const ResultStep = ({ resultData, setResultData, onReset, config, t, language, a
         <div className="relative z-10">
             <div className="flex items-center gap-2 mb-4 text-violet-300">
                 <Palette className="w-5 h-5" />
+                <h3 className="font-bold text-lg">
+                    {config.includePersona ? t.personaStyleTitle : resultData.globalStyle.title}
+                </h3>
+            </div>
+            <div className="bg-slate-800/50 p-2 rounded-xl border border-slate-700/50 backdrop-blur-sm">
+                <EditableText
+                    isTextarea
+                    value={resultData.globalStyle.content}
+                    onChange={(val) => handleGlobalStyleChange('content', val)}
+                    className="text-slate-300 leading-relaxed text-sm focus:text-slate-900 focus:bg-white"
+                />
+            </div>
+        </div>
+      </div>
+
+      {/* Pages List */}
+      <div className="space-y-8">
+        {resultData.pages.map((page, index) => (
+            <div key={index} className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-lg transition-shadow duration-300 group">
+                {/* Page Header */}
+                <div className="px-6 py-4 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-50/50">
+                    <div className="flex items-center gap-3 w-full">
+                        <span className="text-2xl font-black text-violet-600 font-mono whitespace-nowrap">Page {page.page}</span>
+                        <div className="w-px h-6 bg-slate-300 hidden md:block"></div>
+                        <div className="flex-1">
+                             <EditableText 
+                                value={page.title} 
+                                onChange={(val) => handlePageChange(index, 'title', val)}
+                                className={`text-xl font-bold transition-colors ${warningIndex === index ? 'text-red-500 placeholder:text-red-300' : 'text-slate-800 placeholder-slate-400'}`}
+                                placeholder={warningIndex === index ? t.enterTitleWarning : t.pageTitlePlaceholder}
+                             />
+                        </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-2">
+                        {/* Move Up/Down Buttons */}
+                        <div className="flex items-center mr-2 border-r border-slate-200 pr-2 gap-1">
+                            <button
+                                onClick={() => handleMovePage(index, -1)}
+                                disabled={index === 0}
+                                className="p-1.5 rounded-lg text-slate-400 hover:text-violet-600 hover:bg-violet-50 disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-slate-400 transition-all"
+                                title={t.moveUp}
+                            >
+                                <ArrowUp className="w-4 h-4" />
+                            </button>
+                            <button
+                                onClick={() => handleMovePage(index, 1)}
+                                disabled={index === resultData.pages.length - 1}
+                                className="p-1.5 rounded-lg text-slate-400 hover:text-violet-600 hover:bg-violet-50 disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-slate-400 transition-all"
+                                title={t.moveDown}
+                            >
+                                <ArrowDown className="w-4 h-4" />
+                            </button>
+                        </div>
+
+                        {/* Single Page Generation Button */}
+                        <button 
+                            onClick={() => handleGeneratePageContent(index)}
+                            disabled={generatingPages[index]}
+                            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed ${
+                                warningIndex === index 
+                                ? 'bg-red-100 text-red-600 animate-pulse' 
+                                : 'bg-violet-100 hover:bg-violet-200 text-violet-700'
+                            }`}
+                            title="根据标题自动生成内容"
+                        >
+                            {generatingPages[index] ? <Loader2 className="w-4 h-4 animate-spin" /> : <Wand2 className="w-4 h-4" />}
+                            {generatingPages[index] ? t.generatingButton : warningIndex === index ? t.enterTitleWarning : t.aiGenerateButton}
+                        </button>
+                        
+                        {/* Delete Button (Double Click Logic) */}
+                        <button
+                            onClick={() => {
+                                if (deleteConfirmIndex === index) {
+                                    handleDeletePage(index);
+                                } else {
+                                    setDeleteConfirmIndex(index);
+                                    setTimeout(() => setDeleteConfirmIndex(null), 3000); // Auto reset
+                                }
+                            }}
+                            className={`p-2 rounded-lg transition-all duration-200 flex items-center gap-2 ${
+                                deleteConfirmIndex === index 
+                                ? "bg-red-500 text-white hover:bg-red-600 shadow-sm px-3" 
+                                : "text-slate-400 hover:text-red-500 hover:bg-red-50"
+                            }`}
+                            title={deleteConfirmIndex === index ? "Again to Confirm" : "Delete Page"}
+                        >
+                            <Trash2 className="w-4 h-4" />
+                            {deleteConfirmIndex === index && <span className="text-xs font-bold whitespace-nowrap">{t.deleteConfirm}</span>}
+                        </button>
+                    </div>
+                </div>
+
+                <div className="p-6 space-y-6">
+                    {/* Core Points (was Summary) */}
+                    <div>
+                        <h4 className="text-xs font-bold text-slate-400 uppercase mb-2">{t.corePoints}</h4>
+                        <div className="bg-slate-50 p-2 rounded-xl border border-slate-100">
+                             <EditableText 
+                                isTextarea
+                                value={page.corePoints} 
+                                onChange={(val) => handlePageChange(index, 'corePoints', val)}
+                                className="text-slate-700 leading-relaxed text-base min-h-[80px]"
+                                placeholder={t.corePointsPlaceholder}
+                             />
+                        </div>
+                    </div>
+
+                    {/* Visual Elements (was Image Prompt) - MOVED TO MIDDLE */}
+                    <div className="bg-slate-900 rounded-xl p-3 border border-slate-800">
+                         <div className="flex items-center gap-2 mb-2 text-green-400 px-2">
+                            <ImageIcon className="w-4 h-4" />
+                            <h4 className="font-bold text-xs uppercase tracking-wider flex items-center gap-2">
+                                {t.visualElements}
+                                <span className="text-[10px] bg-green-800 text-green-200 px-1 rounded">{t.generatedByGemini}</span>
+                            </h4>
+                        </div>
+                        <EditableText 
+                            isTextarea
+                            value={page.visualElements} 
+                            onChange={(val) => handlePageChange(index, 'visualElements', val)}
+                            className="text-green-300 font-mono text-sm leading-relaxed break-words focus:text-slate-900 focus:bg-white min-h-[60px]"
+                            placeholder={t.visualElementsPlaceholder}
+                        />
+                    </div>
+
+                    {/* Layout Design (was Layout Guide) - MOVED TO BOTTOM */}
+                    <div className="bg-blue-50 rounded-xl p-3 border border-blue-100">
+                        <div className="flex items-center gap-2 mb-2 text-blue-700 px-2">
+                            <Layout className="w-5 h-5" />
+                            <h4 className="font-bold text-sm">{t.layoutDesign}</h4>
+                        </div>
+                        <EditableText 
+                            isTextarea
+                            value={page.layoutDesign} 
+                            onChange={(val) => handlePageChange(index, 'layoutDesign', val)}
+                            className="text-slate-700 text-sm leading-relaxed focus:bg-white/90 min-h-[60px]"
+                            placeholder={t.layoutDesignPlaceholder}
+                        />
+                    </div>
+                </div>
+            </div>
+        ))}
+
+        {/* Add Page Button */}
+        <button
+            onClick={handleAddPage}
+            className="w-full py-4 border-2 border-dashed border-slate-300 rounded-2xl flex items-center justify-center gap-2 text-slate-500 hover:text-violet-600 hover:border-violet-400 hover:bg-violet-50 transition-all font-medium"
+        >
+            <Plus className="w-5 h-5" />
+            {t.addPage}
+        </button>
+      </div>
+
+      {/* Footer Action */}
+      <div className="mt-10 flex justify-center">
+        <button 
+            onClick={onReset}
+            className="text-slate-500 hover:text-violet-600 font-medium flex items-center gap-2 px-6 py-3 rounded-xl hover:bg-white transition-all"
+        >
+            重新设计一个专案 <ArrowRight className="w-4 h-4" />
+        </button>
+      </div>
+
+    </div>
+  );
+};
+
+export default function App() {
+  const [step, setStep] = useState('input'); // input, result
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [language, setLanguage] = useState('zh'); // 'zh' or 'en'
+  const [config, setConfig] = useState({
+      styleDesc: "",
+      pageCount: 5,
+      content: "",
+      uploadedFile: null,
+      includePersona: false,
+      targetAudience: "" ,
+      structureType: 'keypoint' // Default structure
+  });
+  const [resultData, setResultData] = useState(null);
+
+  // --- API Key State Management with LocalStorage ---
+  const [apiKey, setApiKey] = useState(() => {
+      // Check localStorage on initial load
+      if (typeof window !== 'undefined') {
+          return localStorage.getItem('gemini_api_key') || '';
+      }
+      return '';
+  });
+
+  // Save to localStorage whenever apiKey changes
+  useEffect(() => {
+      if (typeof window !== 'undefined') {
+          localStorage.setItem('gemini_api_key', apiKey);
+      }
+  }, [apiKey]);
+
+
+  const t = TRANSLATIONS[language];
+
+  const updateConfig = (key, value) => {
+      setConfig(prev => ({ ...prev, [key]: value }));
+  };
+
+  const handleGenerate = async () => {
+    if (!apiKey) {
+        alert(language === 'zh' ? "请输入 API Key" : "Please enter API Key");
+        return;
+    }
+
+    setIsGenerating(true);
+    
+    try {
+        // Pass language and API Key to generator
+        const generatedData = await generateWithGemini(config, language, apiKey);
+        setResultData(generatedData);
+        setStep('result');
+        window.scrollTo(0, 0);
+    } catch (error) {
+        console.error("Failed to generate:", error);
+        alert(language === 'zh' 
+            ? `生成失败: ${error.message}` 
+            : `Generation failed: ${error.message}`);
+    } finally {
+        setIsGenerating(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-[#F8FAFC] font-sans selection:bg-violet-200 selection:text-violet-900">
+      <Header language={language} setLanguage={setLanguage} t={t} />
+      
+      <main>
+        {step === 'input' && (
+            <InputStep 
+                config={config} 
+                updateConfig={updateConfig} 
+                onGenerate={handleGenerate} 
+                isGenerating={isGenerating}
+                t={t}
+                language={language}
+                apiKey={apiKey}
+                setApiKey={setApiKey}
+            />
+        )}
+        {step === 'result' && resultData && (
+            <ResultStep 
+                resultData={resultData} 
+                setResultData={setResultData}
+                onReset={() => setStep('input')}
+                config={config} 
+                t={t}
+                language={language}
+                apiKey={apiKey}
+            />
+        )}
+      </main>
+
+      <footer className="py-8 text-center text-slate-400 text-sm">
+        {t.footerText}
+      </footer>
+    </div>
+  );
+}
