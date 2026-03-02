@@ -78,13 +78,13 @@ const TRANSLATIONS = {
     targetAudiencePlaceholder: "例如：初中学生、潜在投资人、公司高层管理...",
     pageCount: "预计页数",
     contentLabel: "2. 输入内容或上传资料",
-    contentPlaceholder: "请贴上您的演讲稿、文章内容或大纲。AI 将以此生成简报结构...",
+    contentPlaceholder: "请贴上您的课文、演讲稿或大纲。AI 将严格提取原文重点，不随意篡改词意...",
     uploadLabel: "上传参考图片或 PDF (选填)",
     uploadButton: "选择档案 (图片/PDF)",
     uploadHint: "提示：如果是图片，AI 也可提取核心重点并分析视觉风格！",
     generateButton: "开始分析与生成简报",
     generating: "正在呼叫 Gemini API...",
-    generatingDesc: "正在根据选择的架构重组内容逻辑...",
+    generatingDesc: "正在根据选择的架构提取原文与重组...",
     resultTitle: "Gemini 生成结果",
     downloadButton: "下载文字档 (.txt)",
     corePoints: "核心重点",
@@ -147,13 +147,13 @@ const TRANSLATIONS = {
     targetAudiencePlaceholder: "E.g., Junior students, Potential Investors, C-Level Execs...",
     pageCount: "Estimated Pages",
     contentLabel: "2. Content Source",
-    contentPlaceholder: "Paste your speech, article, or outline here. AI will structure it...",
+    contentPlaceholder: "Paste your source text here. AI will strictly extract points without altering the original vocabulary...",
     uploadLabel: "Upload Reference Image or PDF (Optional)",
     uploadButton: "Choose File (Image/PDF)",
     uploadHint: "Tip: AI can extract core points from images and analyze visual style!",
     generateButton: "Analyze & Generate Presentation",
     generating: "Calling Gemini API...",
-    generatingDesc: "Restructuring content based on selected mode...",
+    generatingDesc: "Strictly extracting content based on selected mode...",
     resultTitle: "Gemini Result",
     downloadButton: "Download Text (.txt)",
     corePoints: "Core Points",
@@ -177,128 +177,50 @@ const TRANSLATIONS = {
   }
 };
 
-// --- Style Presets with Language Support ---
+// --- Style Presets ---
 const GET_STYLE_PRESETS = (lang) => {
-  if (lang === 'en') {
-    return [
-      { id: 1, label: "Ghibli Natural", value: "Ghibli animation style, high saturation blue sky and white clouds, lush green vegetation, hand-painted watercolor texture, creating a fresh, healing, and grand natural atmosphere." },
-      { id: 2, label: "Game Quest Map", value: "ISO 2.5D perspective, game UI interface elements, quest node path, sense of adventure and exploration, pixel or vector style." },
-      { id: 3, label: "Comic/Manga", value: "Black and white or pop colors, using speech bubbles, speed lines, bold characters to emphasize keywords, strong visual impact." },
-      { id: 4, label: "Watercolor", value: "Water stains, transparency, soft edges, artistic atmosphere, suitable for expressing literary and emotional themes." },
-      { id: 5, label: "Pastel Soft", value: "Low saturation macaron colors (pink, mint green, light purple), dreamy, light, and soft visual experience." },
-      { id: 6, label: "Hand-drawn", value: "Warm and friendly, using hand-drawn style icons and borders, lively colors, natural and unrestrained lines." },
-      { id: 7, label: "Warm & Healing", value: "Earth tones (beige, brown), soft rounded corners, natural textures, creating a relaxed and trusting atmosphere." },
-      { id: 8, label: "Japanese Manga", value: "Classic Japanese manga style, monochrome with screentones, expressive character emotions, dynamic action lines, and clear panel layouts." },
-      { id: 9, label: "Retro Nostalgic", value: "Low-fi texture, noise, 80s/90s color scheme, retro serif fonts, old newspaper or film filter effects." },
-      { id: 10, label: "Playful & Childlike", value: "High saturation primary colors (red, yellow, blue), simple geometric shapes, doodle style, full of vitality and fun." },
-      { id: 11, label: "Natural Organic", value: "Using recycled paper texture, plant elements, dark green and earthy yellow, emphasizing environmental protection, sustainability, and connection with nature." },
-      { id: 12, label: "Cyberpunk", value: "High contrast neon colors (purple, cyan, magenta), dark background, Glitch Art, decadent aesthetics of technology and future." },
-      { id: 13, label: "Flat Design", value: "No shadows, bright solid color blocks, simple vector icons, modern UI style, clear and efficient information transmission." },
-      { id: 14, label: "Picture Book Therapy", value: "Soft and warm tones, simple metaphorical imagery, focusing on emotional expression, inner exploration and healing storytelling." },
-      { id: 15, label: "McKinsey Corporate", value: "Highly professional, data-driven, strict alignment, navy blue and grey palette, clear hierarchy, MECE principle visual logic." },
-      { id: 16, label: "Google 4-Color", value: "Clean white background with vibrant Google brand colors (blue, red, yellow, green), geometric shapes, plenty of whitespace, modern and friendly tech vibe." },
-      { id: 17, label: "Glassmorphism", value: "Translucent frosted glass effects, vibrant gradient backgrounds, subtle light borders, floating UI elements, modern UI/UX trend." },
-      { id: 18, label: "Liquid Glass", value: "Fluid, organic 3D shapes, glossy and refractive materials, vibrant metallic or holographic gradients, futuristic and dynamic." },
-      { id: 19, label: "Cute & Moe", value: "Round, chubby UI elements, soft candy colors, adorable mascots, bubbly fonts, bringing a warm, sweet, and highly affable feeling." },
-      { id: 20, label: "Nordic Minimalist", value: "Cool neutral tones, muted earth colors, raw textures (wood, linen), functional minimalism, cozy yet sophisticated (Hygge)." }
-    ];
-  }
-  return [
-    { id: 1, label: "吉卜力自然风 (Ghibli Natural)", value: "吉卜力动画风格，高饱和度的蓝天白云、茂密的绿色植被、手绘水彩质感，营造清新、治愈、宏大的自然氛围。" },
-    { id: 2, label: "游戏任务地图 (Game Quest Map)", value: "ISO 2.5D 视角，游戏 UI 界面元素，任务节点路径，冒险与探索感，像素或矢量风格。" },
-    { id: 3, label: "漫画风格 (Comic/Manga)", value: "黑白或波普色彩，使用对话气泡、速度线、粗体大字强调关键词，视觉冲击力强。" },
-    { id: 4, label: "水彩风格 (Watercolor)", value: "水痕晕染、透明感、柔和的边缘、艺术气息，适合表现文艺、感性的主题。" },
-    { id: 5, label: "粉彩柔和 (Pastel Soft)", value: "低饱和度的马卡龙色系（粉红、薄荷绿、淡紫），梦幻、轻盈、柔和的视觉感受。" },
-    { id: 6, label: "手绘插画 (Hand-drawn)", value: "温暖亲切，使用手绘风格的图标与边框，色彩活泼，线条自然不拘束。" },
-    { id: 7, label: "温暖疗愈 (Warm & Healing)", value: "大地色系（米色、棕色）、柔和的圆角、自然纹理，营造放松与信任的氛围。" },
-    { id: 8, label: "日系漫画 (Japanese Manga)", value: "经典日系漫画风格，黑白网点，丰富的人物情感表达，动态速度线，以及清晰的分镜排版。" },
-    { id: 9, label: "复古怀旧 (Retro Nostalgic)", value: "低保真 (Lo-fi) 质感、噪点、80/90 年代配色、复古衬线字体，旧报纸或胶片滤镜效果。" },
-    { id: 10, label: "活泼童趣 (Playful & Childlike)", value: "高饱和三原色（红黄蓝），简单的几何图形，涂鸦风格，充满活力与趣味。" },
-    { id: 11, label: "自然有机 (Natural Organic)", value: "使用再生纸纹理、植物元素、墨绿色与土黄色，强调环保、可持续与自然连结。" },
-    { id: 12, label: "赛博庞克 (Cyberpunk)", value: "高对比度霓虹色（紫、青、品红），深色背景，故障艺术 (Glitch Art)，科技与未来的颓废美学。" },
-    { id: 13, label: "扁平化设计 (Flat Design)", value: "无阴影、明亮的纯色色块、简洁的矢量图标，现代 UI 风格，信息传达清晰高效。" },
-    { id: 14, label: "绘本治愈 (Picture Book Therapy)", value: "柔和温暖的色调，富有隐喻的简单意象，强调情感表达、内心探索与疗愈的故事性。" },
-    { id: 15, label: "麦肯锡风格 (McKinsey)", value: "高度专业、数据驱动、严格对齐，海军蓝与高级灰配色，层级清晰，遵循MECE原则的视觉逻辑。" },
-    { id: 16, label: "Google四原色 (Google Colors)", value: "干净白底搭配充满活力的Google品牌色（蓝、红、黄、绿），几何图形，大量留白，现代亲切的科技感。" },
-    { id: 17, label: "玻璃拟态 (Glassmorphism)", value: "半透明毛玻璃效果，鲜艳的渐变背景，细腻的高光边框，悬浮的UI元素，现代UI/UX趋势。" },
-    { id: 18, label: "液态玻璃 (Liquid Glass)", value: "流动、有机的3D形态，光泽与折射材质，充满活力的金属或全息渐变色，未来感与动态感。" },
-    { id: 19, label: "可爱萌系 (Cute & Moe)", value: "圆润Q弹的UI元素，柔软糖果色，可爱的吉祥物点缀，活泼的字体，带来温暖、甜美、极具亲和力的感受。" },
-    { id: 20, label: "北欧风 (Nordic)", value: "冷调中性色与低饱和度大地色，强调自然材质感（原木、亚麻），兼具实用主义与极简美学，温馨且高级 (Hygge)。" }
+  const presets = [
+    { id: 1, label: lang === 'zh' ? "吉卜力自然风" : "Ghibli Natural", value: "Ghibli animation style, high saturation blue sky, lush green vegetation, hand-painted watercolor texture." },
+    { id: 2, label: lang === 'zh' ? "游戏任务地图" : "Game Quest Map", value: "ISO 2.5D perspective, game UI elements, quest path, pixel or vector style." },
+    { id: 3, label: lang === 'zh' ? "漫画风格" : "Comic/Manga", value: "High contrast pop colors, using speech bubbles, speed lines, bold characters to emphasize keywords." },
+    { id: 4, label: lang === 'zh' ? "水彩风格" : "Watercolor", value: "Soft water stains, transparency, artistic atmosphere, elegant hand-painted look." },
+    { id: 5, label: lang === 'zh' ? "粉彩柔和" : "Pastel Soft", value: "Low saturation macaron colors, dreamy, light, and soft visual experience." },
+    { id: 6, label: lang === 'zh' ? "手绘插画" : "Hand-drawn", value: "Warm and friendly, hand-drawn icons and borders, natural lines." },
+    { id: 7, label: lang === 'zh' ? "温暖疗愈" : "Warm & Healing", value: "Earth tones, soft rounded corners, natural textures, trusting atmosphere." },
+    { id: 8, label: lang === 'zh' ? "日系漫画" : "Japanese Manga", value: "Classic manga style, monochrome screentones, expressive emotions, sequential panel layout." },
+    { id: 9, label: lang === 'zh' ? "复古怀旧" : "Retro Nostalgic", value: "Lo-fi texture, 80s/90s color scheme, retro serif fonts, film filter effects." },
+    { id: 10, label: lang === 'zh' ? "活泼童趣" : "Playful & Childlike", value: "High saturation primary colors, simple geometric shapes, doodle style." },
+    { id: 11, label: lang === 'zh' ? "自然有机" : "Natural Organic", value: "Recycled paper texture, plant elements, green and earthy tones, eco-friendly feel." },
+    { id: 12, label: lang === 'zh' ? "赛博庞克" : "Cyberpunk", value: "Neon contrast colors, dark background, Glitch Art, futuristic aesthetics." },
+    { id: 13, label: lang === 'zh' ? "扁平化设计" : "Flat Design", value: "No shadows, solid color blocks, vector icons, modern UI style." },
+    { id: 14, label: lang === 'zh' ? "绘本治愈" : "Picture Book Therapy", value: "Soft tones, metaphorical imagery, focusing on emotional storytelling." },
+    { id: 15, label: lang === 'zh' ? "麦肯锡风格" : "McKinsey Corporate", value: "Highly professional, navy blue and grey, strict alignment, data-driven hierarchy." },
+    { id: 16, label: lang === 'zh' ? "Google四原色" : "Google 4-Color", value: "Clean white background with blue, red, yellow, green geometric shapes." },
+    { id: 17, label: lang === 'zh' ? "玻璃拟态" : "Glassmorphism", value: "Frosted glass effects, vibrant gradients, subtle borders, floating elements." },
+    { id: 18, label: lang === 'zh' ? "液态玻璃" : "Liquid Glass", value: "Fluid 3D shapes, glossy refractive materials, dynamic holographic gradients." },
+    { id: 19, label: lang === 'zh' ? "可爱萌系" : "Cute & Moe", value: "Round UI elements, soft candy colors, chubby mascots, bubbly fonts." },
+    { id: 20, label: lang === 'zh' ? "北欧风" : "Nordic Minimalist", value: "Neutral tones, muted earth colors, raw textures like wood and linen, minimalist aesthetic." }
   ];
+  return presets;
 };
 
-// --- Structure Options ---
+// --- Options Helpers ---
 const GET_STRUCTURE_OPTIONS = (lang, t) => [
-    { 
-      id: 'story', 
-      label: t.structureNarrative, 
-      desc: t.structureNarrativeDesc,
-      icon: <BookOpen className="w-5 h-5" />,
-      color: "bg-amber-100 text-amber-700 border-amber-200"
-    },
-    { 
-      id: 'detail', 
-      label: t.structureDetailed, 
-      desc: t.structureDetailedDesc,
-      icon: <FileText className="w-5 h-5" />, 
-      color: "bg-blue-100 text-blue-700 border-blue-200"
-    },
-    { 
-      id: 'keypoint', 
-      label: t.structureKeypoint, 
-      desc: t.structureKeypointDesc,
-      icon: <Target className="w-5 h-5" />,
-      color: "bg-rose-100 text-rose-700 border-rose-200"
-    }
+    { id: 'story', label: t.structureNarrative, desc: t.structureNarrativeDesc, icon: <BookOpen className="w-5 h-5" />, color: "bg-amber-100 text-amber-700 border-amber-200" },
+    { id: 'detail', label: t.structureDetailed, desc: t.structureDetailedDesc, icon: <FileText className="w-5 h-5" />, color: "bg-blue-100 text-blue-700 border-blue-200" },
+    { id: 'keypoint', label: t.structureKeypoint, desc: t.structureKeypointDesc, icon: <Target className="w-5 h-5" />, color: "bg-rose-100 text-rose-700 border-rose-200" }
 ];
 
-// --- Layout Options ---
 const GET_LAYOUT_OPTIONS = (lang, t) => [
-    {
-      id: 'traditional',
-      label: t.layoutTraditional,
-      desc: t.layoutTraditionalDesc,
-      icon: <LayoutGrid className="w-5 h-5" />,
-      color: "bg-blue-100 text-blue-700 border-blue-200"
-    },
-    {
-      id: 'creative',
-      label: t.layoutCreative,
-      desc: t.layoutCreativeDesc,
-      icon: <Wand className="w-5 h-5" />,
-      color: "bg-fuchsia-100 text-fuchsia-700 border-fuchsia-200"
-    },
-    {
-      id: 'minimalist',
-      label: t.layoutMinimalist,
-      desc: t.layoutMinimalistDesc,
-      icon: <AlignLeft className="w-5 h-5" />,
-      color: "bg-emerald-100 text-emerald-700 border-emerald-200"
-    },
-    {
-      id: 'editorial',
-      label: t.layoutEditorial,
-      desc: t.layoutEditorialDesc,
-      icon: <Columns className="w-5 h-5" />,
-      color: "bg-orange-100 text-orange-700 border-orange-200"
-    },
-    {
-      id: 'comic',
-      label: t.layoutComic,
-      desc: t.layoutComicDesc,
-      icon: <LayoutTemplate className="w-5 h-5" />,
-      color: "bg-purple-100 text-purple-700 border-purple-200"
-    },
-    {
-      id: 'pictureBook',
-      label: t.layoutPictureBook,
-      desc: t.layoutPictureBookDesc,
-      icon: <ImagePlus className="w-5 h-5" />,
-      color: "bg-pink-100 text-pink-700 border-pink-200"
-    }
+    { id: 'traditional', label: t.layoutTraditional, desc: t.layoutTraditionalDesc, icon: <LayoutGrid className="w-5 h-5" />, color: "bg-blue-100 text-blue-700 border-blue-200" },
+    { id: 'creative', label: t.layoutCreative, desc: t.layoutCreativeDesc, icon: <Wand className="w-5 h-5" />, color: "bg-fuchsia-100 text-fuchsia-700 border-fuchsia-200" },
+    { id: 'minimalist', label: t.layoutMinimalist, desc: t.layoutMinimalistDesc, icon: <AlignLeft className="w-5 h-5" />, color: "bg-emerald-100 text-emerald-700 border-emerald-200" },
+    { id: 'editorial', label: t.layoutEditorial, desc: t.layoutEditorialDesc, icon: <Columns className="w-5 h-5" />, color: "bg-orange-100 text-orange-700 border-orange-200" },
+    { id: 'comic', label: t.layoutComic, desc: t.layoutComicDesc, icon: <LayoutTemplate className="w-5 h-5" />, color: "bg-purple-100 text-purple-700 border-purple-200" },
+    { id: 'pictureBook', label: t.layoutPictureBook, desc: t.layoutPictureBookDesc, icon: <ImagePlus className="w-5 h-5" />, color: "bg-pink-100 text-pink-700 border-pink-200" }
 ];
 
-// --- Helper: Convert File to Base64 for Gemini Multimodal ---
+// --- Helpers ---
 const fileToBase64 = (file) => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -308,35 +230,27 @@ const fileToBase64 = (file) => {
   });
 };
 
-// --- Helper: Normalize Content to String ---
 const normalizeContent = (content) => {
   if (typeof content === 'string') return content;
-  if (Array.isArray(content)) return content.map(item => typeof item === 'string' ? item : JSON.stringify(item)).join('\n');
+  if (Array.isArray(content)) return content.map(item => String(item)).join('\n');
   if (typeof content === 'object' && content !== null) return JSON.stringify(content);
   if (content === undefined || content === null) return "";
   return String(content);
 };
 
-// --- Helper: Get Layout Instruction ---
 const getLayoutInstruction = (layoutStyle) => {
     switch (layoutStyle) {
-        case 'creative':
-            return "LAYOUT RULE: Use creative, dynamic layouts. Break the grid, use overlapping elements, asymmetrical designs, tilted panels, or high-impact visual arrangements suitable for the chosen style.";
-        case 'minimalist':
-            return "LAYOUT RULE: Use extreme minimalist layouts (Zen style). Emphasize massive negative space (whitespace), very few elements per slide, and central focal points. Keep it highly breathable.";
-        case 'editorial':
-            return "LAYOUT RULE: Use magazine editorial layouts. Feature strong typographic hierarchy, large bold pull-quotes, dynamic text-wrapping around images, and sophisticated multi-column grid systems.";
-        case 'comic':
-            return "LAYOUT RULE: Use comic book storyboard layouts (漫画分镜排版). Divide the slide into multiple dynamic panels (多格分镜). Incorporate speech bubbles (对话气泡), thought balloons, and action lines. Emphasize sequential visual storytelling.";
-        case 'pictureBook':
-            return "LAYOUT RULE: Use picture book layouts (绘本排版). Emphasize large, full-bleed, borderless, or softly blended illustrations that dominate the slide. Use extremely minimal text elegantly integrated into the negative space of the illustration. Aim for a warm, immersive, and narrative-driven aesthetic.";
+        case 'creative': return "LAYOUT: Use creative, dynamic, asymmetrical layouts. Break the grid.";
+        case 'minimalist': return "LAYOUT: Extreme minimalist Zen style. Large whitespace, central focal points.";
+        case 'editorial': return "LAYOUT: Magazine style. Bold quotes, multi-column grid, strong typography.";
+        case 'comic': return "LAYOUT: Comic panels. Divide slide into multiple dynamic blocks with speech bubbles.";
+        case 'pictureBook': return "LAYOUT: Full-bleed imagery. Text integrated into illustrations elegantly.";
         case 'traditional':
-        default:
-            return "LAYOUT RULE: Use traditional, clean, and well-organized layouts. Maintain strict alignment, clear visual hierarchy, and avoid messy or overly exaggerated elements. Keep it professional and highly readable.";
+        default: return "LAYOUT: Traditional, clean, and well-organized layouts. Professional and aligned.";
     }
 };
 
-// --- API Call Logic: Generate Full Presentation ---
+// --- API Logic ---
 const generateWithGemini = async (config, language, apiKey) => {
   const { styleDesc, pageCount, content, uploadedFile, includePersona, targetAudience, structureType, layoutStyle, customPersona } = config;
 
@@ -348,24 +262,24 @@ const generateWithGemini = async (config, language, apiKey) => {
   let structureInstruction = "";
   switch (structureType) {
       case 'story':
-          structureInstruction = "STRUCTURE: NARRATIVE STORY (叙事故事). Strictly use the uploaded materials/provided content, but REORGANIZE it into a compelling narrative or storytelling format. Use elements like background/hook -> conflict/challenge -> resolution -> future outlook to engage the audience emotionally.";
+          structureInstruction = "STRUCTURE: NARRATIVE STORY. Reorganize the exact source content into a chronological/storytelling flow (Background -> Conflict -> Resolution) without changing the vocabulary.";
           break;
       case 'detail':
-          structureInstruction = "STRUCTURE: DETAILED CONTENT (内容详细). Thoroughly analyze the uploaded materials/provided content and PRESERVE THE COMPLETE INFORMATION. Create a highly detailed presentation outlining all facts, data points, and logical arguments systematically. Do not omit important details. Ideal for comprehensive reading reports.";
+          structureInstruction = "STRUCTURE: DETAILED CONTENT. Preserve almost all facts, data, and details from the source. Create a highly comprehensive report layout.";
           break;
       case 'keypoint':
-          structureInstruction = "STRUCTURE: KEY POINTS DEMO (重点演示). Extract ONLY the most crucial highlights and core messages from the uploaded materials/provided content. Discard fluff and long explanations. Focus on high-impact summary bullet points and punchy slogans. Designed for a live speech or executive briefing.";
+          structureInstruction = "STRUCTURE: KEY POINTS. Extract only the most crucial highlights. Use extreme minimalism for text.";
           break;
       default:
-          structureInstruction = "STRUCTURE: Standard Presentation structure.";
+          structureInstruction = "STRUCTURE: Standard Presentation.";
   }
 
   let personaPrompt = "DISABLED.";
   if (includePersona) {
       if (customPersona && customPersona.trim() !== "") {
-           personaPrompt = `ENABLED. You MUST use the user's specific custom character: "${customPersona}". It MUST NOT be the main focus. The Global Style description MUST end with: '页面角落加入专属角色（${customPersona}）作为点缀与搭衬，不喧宾夺主。依内容语意仅微调其动作或小道具。' In 'visualElements' for each page, briefly describe this EXACT SAME character's subtle pose or prop that matches the slide content.`;
+           personaPrompt = `ENABLED. You MUST use the user's specific custom character: "${customPersona}". It MUST NOT be the main focus. The Global Style description MUST end with: '页面角落加入专属角色（${customPersona}）作为点缀与搭衬，不喧宾夺主。依内容语意仅微调其动作或小道具。' In 'visualElements' for each page, briefly describe this EXACT SAME character's subtle pose or prop.`;
       } else {
-           personaPrompt = `ENABLED. You MUST invent ONE specific, consistent character that perfectly fits the Content Topic and Target Audience (e.g., 'a wise owl' for education, 'a floating cyber-bot' for tech). It MUST NOT be the main focus. The Global Style description MUST end with: '根据简报内容量身定制了一个专属角色（并在括号内注明具体形象，例如：一只戴单片眼镜的侦探狗），从头到尾保持该角色形象绝对一致。在页面角落加入此小尺寸角色作为点缀与搭衬，不喧宾夺主。依内容语意仅微调其动作或小道具。' In 'visualElements' for each page, briefly describe this EXACT SAME character's subtle pose or prop that matches the slide content.`;
+           personaPrompt = `ENABLED. Invent ONE specific, consistent character. The Global Style description MUST end with: '根据简报内容量身定制了一个专属角色（并在括号内注明具体形象，例如：一只戴单片眼镜的侦探狗），从头到尾保持该角色形象绝对一致。在页面角落加入此小尺寸角色作为点缀与搭衬，不喧宾夺主。依内容语意仅微调其动作或小道具。' In 'visualElements' for each page, briefly describe this EXACT SAME character's subtle pose or prop.`;
       }
   }
 
@@ -375,47 +289,37 @@ const generateWithGemini = async (config, language, apiKey) => {
     
     Output MUST be valid JSON with this structure:
     {
-      "topic": "Creative Main Title",
+      "topic": "Creative Main Title based on source",
       "globalStyle": {
         "title": "Style Name",
-        "content": "Detailed description of colors, fonts, and mood.${includePersona ? " MUST include this exact sentence at the end: '页面角落加入小尺寸的角色作为点缀与搭衬，不喧宾夺主。依内容语意微调角色的表情或小道具。'" : ""}"
+        "content": "Detailed description of colors, fonts, and mood."
       },
       "pages": [
         {
           "page": 1,
           "title": "Page Title",
-          "corePoints": "Key content points (bullet points preferred). IMPORTANT: If a file (PDF or Image) is uploaded, this MUST be extracted directly from the document's core points.",
-          "visualElements": "Description of visual elements, icons, illustrations, or charts in ${langInstruction}.${includePersona ? " If Persona Mode is enabled, describe the character's pose/expression/props relevant to this slide." : ""}",
+          "corePoints": "Extracted key points.",
+          "visualElements": "Description of visual elements in ${langInstruction}.",
           "layoutDesign": "Specific layout instructions"
         }
       ]
     }
 
+    CRITICAL CONTENT RULE (STRICT TEXT FIDELITY):
+    - You are an EXTRACTOR, not a copywriter. 
+    - You MUST use the EXACT wording, vocabulary, and sentences from the provided Source Content. 
+    - DO NOT paraphrase. DO NOT substitute words with synonyms. DO NOT alter the original meaning. 
+    - If the user provides a textbook text, strictly quote the textbook's sentences to form the points. Your job is simply to format them into bullet points or select the most relevant exact quotes based on the Structure Mode.
+
     CONSTRAINTS:
     1. Generate exactly ${pageCount} pages.
     2. Language: ALL JSON values must be in ${langInstruction}.
-    
     3. ${layoutInstruction}
-    
-    4. **STRUCTURE MODE (${structureType})**:
-       ${structureInstruction}
-
-    5. **Design System & Art Direction (CRITICAL)**: 
-       - You are not just picking a template, you are the Art Director.
-       - Analyze the **Target Audience** ("${targetAudience || "General Audience"}") and the **User Style** ("${styleDesc}").
-       - Create a unique "Global Style" that bridges them while strictly catering to the Target Audience.
-       - **Crucial Synergy**: If the Structure Mode is "Narrative Story" AND the Style is "Comic/Manga" (or similar), you MUST fuse them into a "Comic Storyboarding (漫划分镜说故事)" style. Use panels, speech bubbles, and sequential visual storytelling.
-       - **Requirement**: The 'globalStyle.content' MUST be detailed (approx 50-80 words). It must specify:
-         * **Theme**: A creative name.
-         * **Colors**: 3-4 specific colors perfectly suited for the audience.
-         * **Typography**: Font style.
-         * **Layout**: Structural rules strictly adhering to the LAYOUT RULE defined above (${layoutStyle}).
-         * **Visuals**: Specific art style prompts appropriate for the audience.
-
-    6. Persona Mode: ${personaPrompt}
-    7. Target Audience: "${targetAudience || "General Audience"}". Adjust the tone and complexity to perfectly match this audience.
-    8. Content Source: Use this context: "${content}". 
-    ${uploadedFile ? "9. FILE UPLOADED: Use the attached file as the PRIMARY source of truth. Extract key arguments, data points, and structure from it." : "If content is empty, invent a creative topic based on the style."}
+    4. ${structureInstruction}
+    5. Persona Mode: ${personaPrompt}
+    6. Target Audience: "${targetAudience || "General Audience"}".
+    7. Content Source: Use this context: "${content}". 
+    ${uploadedFile ? "8. FILE UPLOADED: Use the attached file as the STRICT TRUTH. Extract exact quotes from it." : ""}
   `;
 
   let contents = [];
@@ -424,8 +328,8 @@ const generateWithGemini = async (config, language, apiKey) => {
     const fileBase64 = await fileToBase64(uploadedFile);
     const isImage = uploadedFile.type.startsWith('image/');
     const fileInstruction = isImage 
-        ? "CRITICAL TASK: Analyze this uploaded image in two aspects: 1. CONTENT EXTRACTION: Read and extract all visible text, charts, or diagrams to use as the core information source for the presentation (function as OCR). 2. STYLE ANALYSIS: Analyze its visual style/art direction and incorporate it into the 'globalStyle' and 'layoutDesign'."
-        : "CRITICAL TASK: Read the attached document carefully. Extract the most important core points, logic, and data to structure the presentation. Do not hallucinate information not present in the text.";
+        ? "CRITICAL TASK: Read and extract all visible text from this image exactly as written. Then analyze its visual style to inform 'globalStyle'."
+        : "CRITICAL TASK: Read the attached document. Extract the exact sentences and data to structure the presentation. DO NOT rephrase.";
 
     contents = [{
       parts: [
@@ -440,7 +344,6 @@ const generateWithGemini = async (config, language, apiKey) => {
 
   try {
     const response = await fetch(
-      // MUST use stable public model for Github/Vercel deployment
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
       {
         method: 'POST',
@@ -460,7 +363,6 @@ const generateWithGemini = async (config, language, apiKey) => {
     const generatedText = data.candidates[0].content.parts[0].text;
     const parsedData = JSON.parse(generatedText);
 
-    // Sanitize Response Data
     if (parsedData.globalStyle) {
         parsedData.globalStyle.content = normalizeContent(parsedData.globalStyle.content);
     }
@@ -482,7 +384,6 @@ const generateWithGemini = async (config, language, apiKey) => {
   }
 };
 
-// --- API Call Logic: Generate Single Page Content ---
 const generatePageContent = async (config, pageTitle, pageCorePoints, currentTopic, globalStyle, language, apiKey) => {
   const { styleDesc, targetAudience, includePersona, content, uploadedFile, structureType, layoutStyle, customPersona } = config;
   
@@ -492,69 +393,43 @@ const generatePageContent = async (config, pageTitle, pageCorePoints, currentTop
   const layoutInstruction = getLayoutInstruction(layoutStyle);
 
   let structureInstruction = "";
-  switch (structureType) {
-      case 'story':
-          structureInstruction = "Tone: Storytelling, emotional, narrative flow based on provided content.";
-          break;
-      case 'detail':
-          structureInstruction = "Tone: Academic, highly detailed, data-driven, comprehensive based on provided content. Do not omit facts.";
-          break;
-      case 'keypoint':
-          structureInstruction = "Tone: Punchy, minimalist, impactful, extract ONLY core highlights from provided content.";
-          break;
-      default:
-          structureInstruction = "Tone: Standard presentation.";
-  }
+  if (structureType === 'story') structureInstruction = "Structure as a narrative flow.";
+  else if (structureType === 'detail') structureInstruction = "Provide comprehensive details.";
+  else structureInstruction = "Provide minimal core highlights.";
 
-  let personaPrompt = "DISABLED.";
-  if (includePersona) {
-      if (customPersona && customPersona.trim() !== "") {
-          personaPrompt = `ENABLED. The slide features the user's custom character: "${customPersona}". Describe this character's subtle pose/expression/props (e.g. 'The custom character in the bottom right looking thoughtful'). It must NOT dominate the visual.`;
-      } else {
-          personaPrompt = `ENABLED. The slide features the EXACT SAME specific character invented in the Global Style. Describe this character's subtle pose/expression/props (e.g. 'The SAME smart owl icon in the bottom right looking thoughtful'). It must NOT dominate the visual and MUST maintain absolute visual consistency with other pages.`;
-      }
-  }
+  let personaPrompt = includePersona ? (customPersona ? `ENABLED. Use custom character: "${customPersona}".` : `ENABLED. Use the exact same character defined in Global Style.`) : "DISABLED.";
 
   const userPointsContext = pageCorePoints && pageCorePoints.trim() !== "" 
-    ? `User provided specific points for this slide: "${pageCorePoints}".`
-    : "User has not provided specific points for this slide, derive from Title and Source Material.";
+    ? `User provided specific text for this slide: "${pageCorePoints}".`
+    : "User has not provided specific points for this slide, extract exactly from Source Material.";
 
   const systemPrompt = `
     You are a professional Presentation Designer.
-    The user is adding a NEW SLIDE or REFINING a slide in an existing presentation.
+    Refine slide "${pageTitle}" for topic "${currentTopic}".
     
     CONTEXT:
-    - Presentation Topic: "${currentTopic}"
     - Target Audience: "${targetAudience || "General Audience"}"
     - Global Style: "${globalStyle.title}" (${globalStyle.content})
-    - User Style Preference: "${styleDesc}"
     - Layout Rule: ${layoutInstruction}
     - Structure Mode: ${structureType} (${structureInstruction})
     - Persona Mode: ${personaPrompt}
     - User Provided Global Content/Context: "${content}"
-    - Slide Title: "${pageTitle}"
     - Slide Specific Input: ${userPointsContext}
 
-    TASK:
-    Generate/Refine content for a single slide.
-
-    CRITICAL INSTRUCTION: 
-    1. HIGH CONSISTENCY: The generated content MUST perfectly align with the original presentation's topic, depth, and tone. Do NOT deviate, drift off-topic, or hallucinate wild new concepts. Stay highly grounded.
-    2. IF 'User provided specific points' exists: Treat it as a STRICT BASELINE. Do NOT completely rewrite it. Only apply light polishing or formatting (e.g., converting to bullet points) to match the Structure Mode. Preserve the original meaning, phrasing, and structure as much as possible.
-    3. IF 'User provided specific points' is empty: Generate core points strictly based on the User Provided Global Content (text or uploaded file) and the Slide Title. Do NOT deviate from the source material. Adapt verbosity to Structure Mode (Story vs Detail vs Keypoint).
-    4. Ensure the 'layoutDesign' strictly follows the Layout Rule (${layoutStyle}).
-    5. 'visualElements' and 'layoutDesign' must always be generated/regenerated specifically to visualize the final core points.
+    CRITICAL CONTENT RULE (STRICT TEXT FIDELITY):
+    - Do NOT act as a copywriter. Act as an extractor and formatter.
+    - If 'User provided specific text' exists: Treat it as an absolute baseline. Do NOT rewrite it or use synonyms. Only format it (e.g., into bullets) to match the Structure Mode.
+    - If empty: Extract exact quotes/sentences from the Global Content that relate to the Slide Title. Do NOT paraphrase.
 
     Output MUST be valid JSON with this structure:
     {
-      "corePoints": "Key content points (bullet points preferred). If user provided points, preserve them closely and only refine lightly. If not, extract from source based on Structure Mode.",
-      "visualElements": "Description of visual elements in ${langInstruction}, consistent with the Global Style.${includePersona ? " MUST include description of the EXACT SAME character's subtle pose/expression." : ""}",
-      "layoutDesign": "Specific layout instructions, strictly following the Layout Rule.${includePersona ? " MUST reserve a small space (e.g., a corner) for the decorative presenter character." : ""}"
+      "corePoints": "Extracted EXACT text/quotes, formatted as bullet points.",
+      "visualElements": "Description of visuals in ${langInstruction}.",
+      "layoutDesign": "Layout instructions matching the layout rule."
     }
 
     CONSTRAINTS:
     1. Language: ${langInstruction}.
-    2. Tone: Match the target audience and Structure Mode.
   `;
 
   let contents = [];
@@ -563,8 +438,8 @@ const generatePageContent = async (config, pageTitle, pageCorePoints, currentTop
     const fileBase64 = await fileToBase64(uploadedFile);
     const isImage = uploadedFile.type.startsWith('image/');
     const fileInstruction = isImage 
-        ? "IMAGE CONTEXT: Use this image as the primary source of information for the slide content."
-        : "DOCUMENT CONTEXT: Use this document as the primary source of information for the slide content.";
+        ? "IMAGE CONTEXT: Extract text exactly as seen in the image."
+        : "DOCUMENT CONTEXT: Extract text exactly as written in the document.";
 
     contents = [{
       parts: [
@@ -579,7 +454,6 @@ const generatePageContent = async (config, pageTitle, pageCorePoints, currentTop
 
   try {
     const response = await fetch(
-      // MUST use stable public model for Github/Vercel deployment
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
       {
         method: 'POST',
@@ -593,8 +467,7 @@ const generatePageContent = async (config, pageTitle, pageCorePoints, currentTop
 
     if (!response.ok) throw new Error('API Request Failed');
     const data = await response.json();
-    const generatedText = data.candidates[0].content.parts[0].text;
-    const parsedData = JSON.parse(generatedText);
+    const parsedData = JSON.parse(data.candidates[0].content.parts[0].text);
 
     return {
         corePoints: normalizeContent(parsedData.corePoints),
@@ -608,41 +481,7 @@ const generatePageContent = async (config, pageTitle, pageCorePoints, currentTop
   }
 };
 
-// --- Components ---
-
-const Header = ({ language, setLanguage, t }) => (
-  <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 bg-violet-600 rounded-xl flex items-center justify-center shadow-lg shadow-violet-200">
-          <MonitorPlay className="text-white w-6 h-6" />
-        </div>
-        <div>
-          <h1 className="text-xl font-bold text-slate-900 tracking-tight hidden md:block">{t.appTitle}</h1>
-          <h1 className="text-lg font-bold text-slate-900 tracking-tight md:hidden">Gemini Slides</h1>
-          <div className="flex items-center gap-1">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-            </span>
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Powered by Gemini ✨</span>
-          </div>
-        </div>
-      </div>
-      
-      <button 
-        onClick={() => setLanguage(prev => prev === 'zh' ? 'en' : 'zh')}
-        className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-100 transition-colors border border-transparent hover:border-slate-200"
-      >
-        <Globe className="w-4 h-4 text-slate-500" />
-        <span className="text-sm font-medium text-slate-700">
-            {language === 'zh' ? 'English' : '中文'}
-        </span>
-      </button>
-    </div>
-  </header>
-);
-
+// --- UI Components ---
 const ApiKeyInput = ({ apiKey, setApiKey, t }) => {
     const [showKey, setShowKey] = useState(false);
     const [isEditing, setIsEditing] = useState(!apiKey);
@@ -737,6 +576,39 @@ const ApiKeyInput = ({ apiKey, setApiKey, t }) => {
     );
 };
 
+const Header = ({ language, setLanguage, t }) => (
+  <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 bg-violet-600 rounded-xl flex items-center justify-center shadow-lg shadow-violet-200">
+          <MonitorPlay className="text-white w-6 h-6" />
+        </div>
+        <div>
+          <h1 className="text-xl font-bold text-slate-900 tracking-tight hidden md:block">{t.appTitle}</h1>
+          <h1 className="text-lg font-bold text-slate-900 tracking-tight md:hidden">Gemini Slides</h1>
+          <div className="flex items-center gap-1">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+            </span>
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Powered by Gemini ✨</span>
+          </div>
+        </div>
+      </div>
+      
+      <button 
+        onClick={() => setLanguage(prev => prev === 'zh' ? 'en' : 'zh')}
+        className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-100 transition-colors border border-transparent hover:border-slate-200"
+      >
+        <Globe className="w-4 h-4 text-slate-500" />
+        <span className="text-sm font-medium text-slate-700">
+            {language === 'zh' ? 'English' : '中文'}
+        </span>
+      </button>
+    </div>
+  </header>
+);
+
 const InputStep = ({ config, updateConfig, onGenerate, isGenerating, t, language, apiKey, setApiKey }) => {
   const fileInputRef = useRef(null);
   const stylePresets = GET_STYLE_PRESETS(language);
@@ -767,14 +639,13 @@ const InputStep = ({ config, updateConfig, onGenerate, isGenerating, t, language
   return (
     <div className="max-w-5xl mx-auto py-10 px-4 animate-fade-in">
       
-      {/* API Key Input Section */}
       <ApiKeyInput apiKey={apiKey} setApiKey={setApiKey} t={t} />
 
       <div className="bg-white rounded-3xl shadow-xl shadow-slate-200/50 p-8 border border-white relative overflow-hidden">
         {isGenerating && (
             <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-50 flex flex-col items-center justify-center">
                  <Loader2 className="w-12 h-12 text-violet-600 animate-spin mb-4" />
-                 <h3 className="text-xl font-bold text-slate-800">✨ Gemini {language === 'zh' ? '正在思考中...' : 'is thinking...'}</h3>
+                 <h3 className="text-xl font-bold text-slate-800">✨ Gemini {language === 'zh' ? '正在提取内容...' : 'Extracting content...'}</h3>
                  <p className="text-slate-500">{t.generatingDesc}</p>
             </div>
         )}
@@ -914,7 +785,7 @@ const InputStep = ({ config, updateConfig, onGenerate, isGenerating, t, language
                     </div>
                 </div>
                 
-                {/* 自定义角色输入框 - 仅在勾选时展开 */}
+                {/* 自定义角色输入框 */}
                 {config.includePersona && (
                     <div className="mt-3 pl-12 animate-fade-in-up">
                         <label className="block text-xs font-semibold text-slate-500 mb-1">{t.customPersonaLabel}</label>
@@ -1087,19 +958,11 @@ const ResultStep = ({ resultData, setResultData, onReset, config, t, language, a
 
   const handleMovePage = (index, direction) => {
       const newPages = [...resultData.pages];
-      
       if (direction === -1 && index === 0) return; 
       if (direction === 1 && index === newPages.length - 1) return; 
-      
       const targetIndex = index + direction;
-      
       [newPages[index], newPages[targetIndex]] = [newPages[targetIndex], newPages[index]];
-      
-      const reindexedPages = newPages.map((page, idx) => ({
-          ...page,
-          page: idx + 1
-      }));
-      
+      const reindexedPages = newPages.map((page, idx) => ({ ...page, page: idx + 1 }));
       setResultData({ ...resultData, pages: reindexedPages });
   };
 
