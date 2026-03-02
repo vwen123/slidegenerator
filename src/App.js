@@ -32,7 +32,8 @@ import {
   Key,          
   Eye,          
   EyeOff,       
-  ExternalLink
+  ExternalLink,
+  Quote
 } from 'lucide-react';
 
 // --- Translations ---
@@ -72,6 +73,8 @@ const TRANSLATIONS = {
     structureKeypoint: "重点演示",
     structureKeypointDesc: "精准提取核心重点，适合口头演讲演示",
     includePersona: "融合角色设定",
+    strictExtractionLabel: "严格忠于原文",
+    strictExtractionDesc: "开启后，AI 将直接摘录原文词句，禁止同义词替换或改写，适合课本/法条。",
     customPersonaLabel: "自定义 IP 角色 (选填)",
     customPersonaPlaceholder: "描述您的专属角色，例如：一只戴着红帽子的蓝猫...",
     targetAudience: "目标受众 (Target Audience)",
@@ -141,6 +144,8 @@ const TRANSLATIONS = {
     structureKeypoint: "Key Points",
     structureKeypointDesc: "Extract core highlights for speeches & pitches",
     includePersona: "Integrate Character Setting",
+    strictExtractionLabel: "Strict Text Extraction",
+    strictExtractionDesc: "When enabled, AI will extract exact quotes without paraphrasing or rewriting.",
     customPersonaLabel: "Custom IP Character (Optional)",
     customPersonaPlaceholder: "Describe your character, e.g., A blue cat wearing a red hat...",
     targetAudience: "Target Audience",
@@ -252,7 +257,7 @@ const getLayoutInstruction = (layoutStyle) => {
 
 // --- API Logic ---
 const generateWithGemini = async (config, language, apiKey) => {
-  const { styleDesc, pageCount, content, uploadedFile, includePersona, targetAudience, structureType, layoutStyle, customPersona } = config;
+  const { styleDesc, pageCount, content, uploadedFile, includePersona, targetAudience, structureType, layoutStyle, customPersona, strictExtraction } = config;
 
   if (!apiKey) throw new Error("API Key Missing");
 
@@ -283,6 +288,16 @@ const generateWithGemini = async (config, language, apiKey) => {
       }
   }
 
+  let contentRule = strictExtraction 
+      ? `CRITICAL CONTENT RULE (STRICT TEXT FIDELITY):
+- You are an EXTRACTOR, not a copywriter. 
+- You MUST use the EXACT wording, vocabulary, and sentences from the provided Source Content. 
+- DO NOT paraphrase. DO NOT substitute words with synonyms. DO NOT alter the original meaning. 
+- If the user provides a textbook text, strictly quote the textbook's sentences to form the points.`
+      : `CONTENT FORMATTING RULE:
+- Summarize, refine, and optimize the source content into impactful bullet points suitable for a presentation. 
+- You are encouraged to paraphrase and improve the wording for better flow and visual impact, as long as the core meaning is preserved.`;
+
   const systemPrompt = `
     You are a professional Presentation Designer and AI Art Director.
     Your task is to generate a structured outline for a presentation based on the user's input.
@@ -305,11 +320,7 @@ const generateWithGemini = async (config, language, apiKey) => {
       ]
     }
 
-    CRITICAL CONTENT RULE (STRICT TEXT FIDELITY):
-    - You are an EXTRACTOR, not a copywriter. 
-    - You MUST use the EXACT wording, vocabulary, and sentences from the provided Source Content. 
-    - DO NOT paraphrase. DO NOT substitute words with synonyms. DO NOT alter the original meaning. 
-    - If the user provides a textbook text, strictly quote the textbook's sentences to form the points. Your job is simply to format them into bullet points or select the most relevant exact quotes based on the Structure Mode.
+    ${contentRule}
 
     CONSTRAINTS:
     1. Generate exactly ${pageCount} pages.
@@ -385,7 +396,7 @@ const generateWithGemini = async (config, language, apiKey) => {
 };
 
 const generatePageContent = async (config, pageTitle, pageCorePoints, currentTopic, globalStyle, language, apiKey) => {
-  const { styleDesc, targetAudience, includePersona, content, uploadedFile, structureType, layoutStyle, customPersona } = config;
+  const { styleDesc, targetAudience, includePersona, content, uploadedFile, structureType, layoutStyle, customPersona, strictExtraction } = config;
   
   if (!apiKey) throw new Error("API Key Missing");
 
@@ -398,6 +409,16 @@ const generatePageContent = async (config, pageTitle, pageCorePoints, currentTop
   else structureInstruction = "Provide minimal core highlights.";
 
   let personaPrompt = includePersona ? (customPersona ? `ENABLED. Use custom character: "${customPersona}".` : `ENABLED. Use the exact same character defined in Global Style.`) : "DISABLED.";
+
+  let contentRule = strictExtraction
+      ? `CRITICAL CONTENT RULE (STRICT TEXT FIDELITY):
+- Do NOT act as a copywriter. Act as an extractor and formatter.
+- If 'User provided specific text' exists: Treat it as an absolute baseline. Do NOT rewrite it or use synonyms. Only format it (e.g., into bullets) to match the Structure Mode.
+- If empty: Extract exact quotes/sentences from the Global Content that relate to the Slide Title. Do NOT paraphrase.`
+      : `CONTENT FORMATTING RULE:
+- Act as a copywriter and presentation expert.
+- If 'User provided specific text' exists: Refine and optimize it for a presentation slide. Make it punchy and impactful.
+- If empty: Summarize relevant points from the Global Content. Paraphrase for better presentation flow.`;
 
   const userPointsContext = pageCorePoints && pageCorePoints.trim() !== "" 
     ? `User provided specific text for this slide: "${pageCorePoints}".`
@@ -416,10 +437,7 @@ const generatePageContent = async (config, pageTitle, pageCorePoints, currentTop
     - User Provided Global Content/Context: "${content}"
     - Slide Specific Input: ${userPointsContext}
 
-    CRITICAL CONTENT RULE (STRICT TEXT FIDELITY):
-    - Do NOT act as a copywriter. Act as an extractor and formatter.
-    - If 'User provided specific text' exists: Treat it as an absolute baseline. Do NOT rewrite it or use synonyms. Only format it (e.g., into bullets) to match the Structure Mode.
-    - If empty: Extract exact quotes/sentences from the Global Content that relate to the Slide Title. Do NOT paraphrase.
+    ${contentRule}
 
     Output MUST be valid JSON with this structure:
     {
@@ -758,46 +776,77 @@ const InputStep = ({ config, updateConfig, onGenerate, isGenerating, t, language
               />
             </div>
 
-            {/* 个人形象融合设定 */}
-            <div>
-                <div 
-                    onClick={() => updateConfig('includePersona', !config.includePersona)}
-                    className={`flex items-center gap-4 p-5 rounded-xl border cursor-pointer transition-all duration-200 ${
-                        config.includePersona 
-                        ? 'bg-violet-50 border-violet-200 shadow-sm' 
-                        : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50'
-                    }`}
-                >
-                    <div className={`flex-shrink-0 w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-colors ${
-                        config.includePersona 
-                        ? 'bg-violet-600 border-violet-600' 
-                        : 'bg-white border-slate-300'
-                    }`}>
-                        {config.includePersona && <Check className="w-4 h-4 text-white stroke-[3]" />}
+            {/* 开关设定组 */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* 个人形象融合设定 */}
+                <div>
+                    <div 
+                        onClick={() => updateConfig('includePersona', !config.includePersona)}
+                        className={`flex items-center gap-4 p-5 rounded-xl border cursor-pointer transition-all duration-200 h-full ${
+                            config.includePersona 
+                            ? 'bg-violet-50 border-violet-200 shadow-sm' 
+                            : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                        }`}
+                    >
+                        <div className={`flex-shrink-0 w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-colors ${
+                            config.includePersona 
+                            ? 'bg-violet-600 border-violet-600' 
+                            : 'bg-white border-slate-300'
+                        }`}>
+                            {config.includePersona && <Check className="w-4 h-4 text-white stroke-[3]" />}
+                        </div>
+                        <div>
+                            <div className="flex items-center gap-2">
+                                <UserCircle2 className={`w-5 h-5 ${config.includePersona ? 'text-violet-600' : 'text-slate-500'}`} />
+                                <h4 className={`text-sm font-bold ${config.includePersona ? 'text-violet-900' : 'text-slate-700'}`}>
+                                    {t.includePersona}
+                                </h4>
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <div className="flex items-center gap-2">
-                            <UserCircle2 className={`w-5 h-5 ${config.includePersona ? 'text-violet-600' : 'text-slate-500'}`} />
-                            <h4 className={`text-sm font-bold ${config.includePersona ? 'text-violet-900' : 'text-slate-700'}`}>
-                                {t.includePersona}
-                            </h4>
+                    
+                    {/* 自定义角色输入框 */}
+                    {config.includePersona && (
+                        <div className="mt-3 pl-12 animate-fade-in-up">
+                            <label className="block text-xs font-semibold text-slate-500 mb-1">{t.customPersonaLabel}</label>
+                            <input 
+                                type="text" 
+                                value={config.customPersona || ''}
+                                onChange={(e) => updateConfig('customPersona', e.target.value)}
+                                placeholder={t.customPersonaPlaceholder}
+                                className="w-full p-3 text-sm bg-violet-50/50 border border-violet-100 rounded-xl text-slate-700 placeholder:text-slate-400 focus:ring-2 focus:ring-violet-500 focus:bg-white transition-all outline-none shadow-inner"
+                            />
+                        </div>
+                    )}
+                </div>
+
+                {/* 严格忠于原文设定 */}
+                <div>
+                    <div 
+                        onClick={() => updateConfig('strictExtraction', !config.strictExtraction)}
+                        className={`flex items-center gap-4 p-5 rounded-xl border cursor-pointer transition-all duration-200 h-full ${
+                            config.strictExtraction 
+                            ? 'bg-violet-50 border-violet-200 shadow-sm' 
+                            : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                        }`}
+                    >
+                        <div className={`flex-shrink-0 w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-colors ${
+                            config.strictExtraction 
+                            ? 'bg-violet-600 border-violet-600' 
+                            : 'bg-white border-slate-300'
+                        }`}>
+                            {config.strictExtraction && <Check className="w-4 h-4 text-white stroke-[3]" />}
+                        </div>
+                        <div>
+                            <div className="flex items-center gap-2">
+                                <Quote className={`w-5 h-5 ${config.strictExtraction ? 'text-violet-600' : 'text-slate-500'}`} />
+                                <h4 className={`text-sm font-bold ${config.strictExtraction ? 'text-violet-900' : 'text-slate-700'}`}>
+                                    {t.strictExtractionLabel}
+                                </h4>
+                            </div>
                         </div>
                     </div>
                 </div>
-                
-                {/* 自定义角色输入框 */}
-                {config.includePersona && (
-                    <div className="mt-3 pl-12 animate-fade-in-up">
-                        <label className="block text-xs font-semibold text-slate-500 mb-1">{t.customPersonaLabel}</label>
-                        <input 
-                            type="text" 
-                            value={config.customPersona || ''}
-                            onChange={(e) => updateConfig('customPersona', e.target.value)}
-                            placeholder={t.customPersonaPlaceholder}
-                            className="w-full p-3 text-sm bg-violet-50/50 border border-violet-100 rounded-xl text-slate-700 placeholder:text-slate-400 focus:ring-2 focus:ring-violet-500 focus:bg-white transition-all outline-none shadow-inner"
-                        />
-                    </div>
-                )}
             </div>
 
             {/* Content Section Header */}
@@ -1263,6 +1312,7 @@ export default function App() {
       uploadedFile: null,
       includePersona: false,
       customPersona: "", // 存储自定义角色
+      strictExtraction: false, // 新增开关状态
       targetAudience: "" ,
       structureType: 'keypoint', // Default structure
       layoutStyle: 'traditional' // Default layout
