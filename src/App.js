@@ -4,9 +4,7 @@ import {
   FileText, 
   Upload, 
   Sparkles, 
-  ChevronDown, 
-  Image as ImageIcon, 
-  PenTool, 
+  ImageIcon, 
   Download,
   ArrowRight,
   CheckCircle2,
@@ -16,27 +14,26 @@ import {
   UserCircle2,
   Check,
   Loader2,
-  AlertCircle,
   Users,
   Plus,
   Wand2,
   Trash2,
   Globe,
-  Key,          
-  Eye,          
-  EyeOff,       
-  ExternalLink, 
-  Save,         
   ArrowUp,      
   ArrowDown,
   BookOpen,     
-  List,         
-  Target        
+  Target,
+  LayoutGrid,
+  Wand,
+  AlignLeft,   
+  Columns,     
+  LayoutTemplate, 
+  ImagePlus,
+  Key,          
+  Eye,          
+  EyeOff,       
+  ExternalLink
 } from 'lucide-react';
-
-// --- Configuration ---
-// 在此处填入您的 API Key。如果留空，系统将使用“模拟数据”进行演示。
-const apiKey = ""; 
 
 // --- Translations ---
 const TRANSLATIONS = {
@@ -51,18 +48,32 @@ const TRANSLATIONS = {
     changeKey: "更换 Key",
     done: "完成",
     selectStyleTitle: "1. 设定简报风格与架构",
+    layoutStyleLabel: "排版风格 (Layout Style)",
+    layoutTraditional: "传统排版",
+    layoutTraditionalDesc: "工整对齐、清晰易读、专业稳重",
+    layoutCreative: "创意排版",
+    layoutCreativeDesc: "破格重叠、灵活多变、视觉冲击",
+    layoutMinimalist: "极简留白",
+    layoutMinimalistDesc: "大量留白、呼吸感强、聚焦核心",
+    layoutEditorial: "杂志画报",
+    layoutEditorialDesc: "图文穿插、大字引言、高级质感",
+    layoutComic: "漫画分镜",
+    layoutComicDesc: "多格画面、对话气泡、强视觉叙事",
+    layoutPictureBook: "绘本排版",
+    layoutPictureBookDesc: "满版大图、少字融入、温馨沉浸",
     stylePresetsTitle: "设计风格 (Visual Style)",
     designStyleLabel: "设计风格描述",
     designStylePlaceholder: "请描述您想要的设计风格...",
     structureLabel: "简报叙事架构 (Presentation Structure)",
     structureNarrative: "叙事故事",
-    structureNarrativeDesc: "起承转合，情感共鸣，适合演讲",
+    structureNarrativeDesc: "根据上传资料，转化为说故事的方式呈现",
     structureDetailed: "内容详细",
-    structureDetailedDesc: "完整资讯，数据佐证，适合报告",
+    structureDetailedDesc: "保留完整资讯与数据，制作详尽书面报告",
     structureKeypoint: "重点演示",
-    structureKeypointDesc: "极简核心，视觉冲击，适合路演",
+    structureKeypointDesc: "精准提取核心重点，适合口头演讲演示",
     includePersona: "融合角色设定",
-    includePersonaDesc: "✨ AI 将会在每一页自动预留“讲解员”空间，并调整构图避免遮挡。",
+    customPersonaLabel: "自定义 IP 角色 (选填)",
+    customPersonaPlaceholder: "描述您的专属角色，例如：一只戴着红帽子的蓝猫...",
     targetAudience: "目标受众 (Target Audience)",
     targetAudiencePlaceholder: "例如：初中学生、潜在投资人、公司高层管理...",
     pageCount: "预计页数",
@@ -106,18 +117,32 @@ const TRANSLATIONS = {
     changeKey: "Change Key",
     done: "Done",
     selectStyleTitle: "1. Style & Structure Settings",
+    layoutStyleLabel: "Layout Style",
+    layoutTraditional: "Traditional",
+    layoutTraditionalDesc: "Neat, aligned, highly readable",
+    layoutCreative: "Creative",
+    layoutCreativeDesc: "Dynamic, overlapping, high impact",
+    layoutMinimalist: "Minimalist",
+    layoutMinimalistDesc: "Lots of whitespace, focus on core",
+    layoutEditorial: "Editorial",
+    layoutEditorialDesc: "Text & image interplay, bold quotes",
+    layoutComic: "Comic Panels",
+    layoutComicDesc: "Grid panels, speech bubbles, sequential",
+    layoutPictureBook: "Picture Book",
+    layoutPictureBookDesc: "Large imagery, minimal text, immersive",
     stylePresetsTitle: "Visual Style",
     designStyleLabel: "Style Description",
     designStylePlaceholder: "Describe your desired style...",
     structureLabel: "Presentation Structure",
     structureNarrative: "Narrative Story",
-    structureNarrativeDesc: "Hero's journey, emotional flow",
+    structureNarrativeDesc: "Transform uploaded data into a storytelling format",
     structureDetailed: "Detailed Content",
-    structureDetailedDesc: "Comprehensive data, report style",
+    structureDetailedDesc: "Retain full info & data for a comprehensive report",
     structureKeypoint: "Key Points",
-    structureKeypointDesc: "Minimalist, high impact pitch",
+    structureKeypointDesc: "Extract core highlights for speeches & pitches",
     includePersona: "Integrate Character Setting",
-    includePersonaDesc: "✨ AI will reserve space for a 'presenter' on every page and adjust composition.",
+    customPersonaLabel: "Custom IP Character (Optional)",
+    customPersonaPlaceholder: "Describe your character, e.g., A blue cat wearing a red hat...",
     targetAudience: "Target Audience",
     targetAudiencePlaceholder: "E.g., Junior students, Potential Investors, C-Level Execs...",
     pageCount: "Estimated Pages",
@@ -160,16 +185,22 @@ const GET_STYLE_PRESETS = (lang) => {
       { id: 2, label: "Game Quest Map", value: "ISO 2.5D perspective, game UI interface elements, quest node path, sense of adventure and exploration, pixel or vector style." },
       { id: 3, label: "Comic/Manga", value: "Black and white or pop colors, using speech bubbles, speed lines, bold characters to emphasize keywords, strong visual impact." },
       { id: 4, label: "Watercolor", value: "Water stains, transparency, soft edges, artistic atmosphere, suitable for expressing literary and emotional themes." },
-      { id: 5, label: "Pastel", value: "Low saturation macaron colors (pink, mint green, light purple), dreamy, light, and cute visual experience." },
+      { id: 5, label: "Pastel Soft", value: "Low saturation macaron colors (pink, mint green, light purple), dreamy, light, and soft visual experience." },
       { id: 6, label: "Hand-drawn", value: "Warm and friendly, using hand-drawn style icons and borders, lively colors, natural and unrestrained lines." },
       { id: 7, label: "Warm & Healing", value: "Earth tones (beige, brown), soft rounded corners, natural textures, creating a relaxed and trusting atmosphere." },
-      { id: 8, label: "Japanese Realistic", value: "Minimalist, whitespace, high-quality real scene photography, wood tones, emphasizing details and reality, clean like Muji." },
+      { id: 8, label: "Japanese Manga", value: "Classic Japanese manga style, monochrome with screentones, expressive character emotions, dynamic action lines, and clear panel layouts." },
       { id: 9, label: "Retro Nostalgic", value: "Low-fi texture, noise, 80s/90s color scheme, retro serif fonts, old newspaper or film filter effects." },
       { id: 10, label: "Playful & Childlike", value: "High saturation primary colors (red, yellow, blue), simple geometric shapes, doodle style, full of vitality and fun." },
-    { id: 11, label: "Natural Organic", value: "Using recycled paper texture, plant elements, dark green and earthy yellow, emphasizing environmental protection, sustainability, and connection with nature." },
-    { id: 12, label: "Cyberpunk", value: "High contrast neon colors (purple, cyan, magenta), dark background, Glitch Art, decadent aesthetics of technology and future." },
-    { id: 13, label: "Flat Design", value: "No shadows, bright solid color blocks, simple vector icons, modern UI style, clear and efficient information transmission." },
-    { id: 14, label: "Picture Book Therapy", value: "Soft and warm tones, simple metaphorical imagery, focusing on emotional expression, inner exploration and healing storytelling." },
+      { id: 11, label: "Natural Organic", value: "Using recycled paper texture, plant elements, dark green and earthy yellow, emphasizing environmental protection, sustainability, and connection with nature." },
+      { id: 12, label: "Cyberpunk", value: "High contrast neon colors (purple, cyan, magenta), dark background, Glitch Art, decadent aesthetics of technology and future." },
+      { id: 13, label: "Flat Design", value: "No shadows, bright solid color blocks, simple vector icons, modern UI style, clear and efficient information transmission." },
+      { id: 14, label: "Picture Book Therapy", value: "Soft and warm tones, simple metaphorical imagery, focusing on emotional expression, inner exploration and healing storytelling." },
+      { id: 15, label: "McKinsey Corporate", value: "Highly professional, data-driven, strict alignment, navy blue and grey palette, clear hierarchy, MECE principle visual logic." },
+      { id: 16, label: "Google 4-Color", value: "Clean white background with vibrant Google brand colors (blue, red, yellow, green), geometric shapes, plenty of whitespace, modern and friendly tech vibe." },
+      { id: 17, label: "Glassmorphism", value: "Translucent frosted glass effects, vibrant gradient backgrounds, subtle light borders, floating UI elements, modern UI/UX trend." },
+      { id: 18, label: "Liquid Glass", value: "Fluid, organic 3D shapes, glossy and refractive materials, vibrant metallic or holographic gradients, futuristic and dynamic." },
+      { id: 19, label: "Cute & Moe", value: "Round, chubby UI elements, soft candy colors, adorable mascots, bubbly fonts, bringing a warm, sweet, and highly affable feeling." },
+      { id: 20, label: "Nordic Minimalist", value: "Cool neutral tones, muted earth colors, raw textures (wood, linen), functional minimalism, cozy yet sophisticated (Hygge)." }
     ];
   }
   return [
@@ -177,16 +208,22 @@ const GET_STYLE_PRESETS = (lang) => {
     { id: 2, label: "游戏任务地图 (Game Quest Map)", value: "ISO 2.5D 视角，游戏 UI 界面元素，任务节点路径，冒险与探索感，像素或矢量风格。" },
     { id: 3, label: "漫画风格 (Comic/Manga)", value: "黑白或波普色彩，使用对话气泡、速度线、粗体大字强调关键词，视觉冲击力强。" },
     { id: 4, label: "水彩风格 (Watercolor)", value: "水痕晕染、透明感、柔和的边缘、艺术气息，适合表现文艺、感性的主题。" },
-    { id: 5, label: "粉彩风格 (Pastel)", value: "低饱和度的马卡龙色系（粉红、薄荷绿、淡紫），梦幻、轻盈、可爱的视觉感受。" },
+    { id: 5, label: "粉彩柔和 (Pastel Soft)", value: "低饱和度的马卡龙色系（粉红、薄荷绿、淡紫），梦幻、轻盈、柔和的视觉感受。" },
     { id: 6, label: "手绘插画 (Hand-drawn)", value: "温暖亲切，使用手绘风格的图标与边框，色彩活泼，线条自然不拘束。" },
     { id: 7, label: "温暖疗愈 (Warm & Healing)", value: "大地色系（米色、棕色）、柔和的圆角、自然纹理，营造放松与信任的氛围。" },
-    { id: 8, label: "日式写实 (Japanese Realistic)", value: "极简、留白、高品质实景摄影、木质色调，强调细节与真实感，由于无印良品般的干净。" },
+    { id: 8, label: "日系漫画 (Japanese Manga)", value: "经典日系漫画风格，黑白网点，丰富的人物情感表达，动态速度线，以及清晰的分镜排版。" },
     { id: 9, label: "复古怀旧 (Retro Nostalgic)", value: "低保真 (Lo-fi) 质感、噪点、80/90 年代配色、复古衬线字体，旧报纸或胶片滤镜效果。" },
     { id: 10, label: "活泼童趣 (Playful & Childlike)", value: "高饱和三原色（红黄蓝），简单的几何图形，涂鸦风格，充满活力与趣味。" },
     { id: 11, label: "自然有机 (Natural Organic)", value: "使用再生纸纹理、植物元素、墨绿色与土黄色，强调环保、可持续与自然连结。" },
     { id: 12, label: "赛博庞克 (Cyberpunk)", value: "高对比度霓虹色（紫、青、品红），深色背景，故障艺术 (Glitch Art)，科技与未来的颓废美学。" },
     { id: 13, label: "扁平化设计 (Flat Design)", value: "无阴影、明亮的纯色色块、简洁的矢量图标，现代 UI 风格，信息传达清晰高效。" },
     { id: 14, label: "绘本治愈 (Picture Book Therapy)", value: "柔和温暖的色调，富有隐喻的简单意象，强调情感表达、内心探索与疗愈的故事性。" },
+    { id: 15, label: "麦肯锡风格 (McKinsey)", value: "高度专业、数据驱动、严格对齐，海军蓝与高级灰配色，层级清晰，遵循MECE原则的视觉逻辑。" },
+    { id: 16, label: "Google四原色 (Google Colors)", value: "干净白底搭配充满活力的Google品牌色（蓝、红、黄、绿），几何图形，大量留白，现代亲切的科技感。" },
+    { id: 17, label: "玻璃拟态 (Glassmorphism)", value: "半透明毛玻璃效果，鲜艳的渐变背景，细腻的高光边框，悬浮的UI元素，现代UI/UX趋势。" },
+    { id: 18, label: "液态玻璃 (Liquid Glass)", value: "流动、有机的3D形态，光泽与折射材质，充满活力的金属或全息渐变色，未来感与动态感。" },
+    { id: 19, label: "可爱萌系 (Cute & Moe)", value: "圆润Q弹的UI元素，柔软糖果色，可爱的吉祥物点缀，活泼的字体，带来温暖、甜美、极具亲和力的感受。" },
+    { id: 20, label: "北欧风 (Nordic)", value: "冷调中性色与低饱和度大地色，强调自然材质感（原木、亚麻），兼具实用主义与极简美学，温馨且高级 (Hygge)。" }
   ];
 };
 
@@ -215,6 +252,52 @@ const GET_STRUCTURE_OPTIONS = (lang, t) => [
     }
 ];
 
+// --- Layout Options ---
+const GET_LAYOUT_OPTIONS = (lang, t) => [
+    {
+      id: 'traditional',
+      label: t.layoutTraditional,
+      desc: t.layoutTraditionalDesc,
+      icon: <LayoutGrid className="w-5 h-5" />,
+      color: "bg-blue-100 text-blue-700 border-blue-200"
+    },
+    {
+      id: 'creative',
+      label: t.layoutCreative,
+      desc: t.layoutCreativeDesc,
+      icon: <Wand className="w-5 h-5" />,
+      color: "bg-fuchsia-100 text-fuchsia-700 border-fuchsia-200"
+    },
+    {
+      id: 'minimalist',
+      label: t.layoutMinimalist,
+      desc: t.layoutMinimalistDesc,
+      icon: <AlignLeft className="w-5 h-5" />,
+      color: "bg-emerald-100 text-emerald-700 border-emerald-200"
+    },
+    {
+      id: 'editorial',
+      label: t.layoutEditorial,
+      desc: t.layoutEditorialDesc,
+      icon: <Columns className="w-5 h-5" />,
+      color: "bg-orange-100 text-orange-700 border-orange-200"
+    },
+    {
+      id: 'comic',
+      label: t.layoutComic,
+      desc: t.layoutComicDesc,
+      icon: <LayoutTemplate className="w-5 h-5" />,
+      color: "bg-purple-100 text-purple-700 border-purple-200"
+    },
+    {
+      id: 'pictureBook',
+      label: t.layoutPictureBook,
+      desc: t.layoutPictureBookDesc,
+      icon: <ImagePlus className="w-5 h-5" />,
+      color: "bg-pink-100 text-pink-700 border-pink-200"
+    }
+];
+
 // --- Helper: Convert File to Base64 for Gemini Multimodal ---
 const fileToBase64 = (file) => {
   return new Promise((resolve, reject) => {
@@ -234,59 +317,56 @@ const normalizeContent = (content) => {
   return String(content);
 };
 
-// --- MOCK DATA GENERATOR ---
-const getMockPresentation = (config) => {
-    return {
-        topic: "（演示）AI 对未来教育的影响",
-        globalStyle: {
-            title: "未来科技感 (演示)",
-            content: "本演示采用高科技感的深蓝与霓虹色调，旨在展示 API 未连接时的模拟效果。字体采用现代无衬线体，强调简洁与力度。"
-        },
-        pages: Array.from({ length: config.pageCount }).map((_, i) => ({
-            page: i + 1,
-            title: `第 ${i+1} 章：${i === 0 ? 'AI 的崛起' : i === 1 ? '个性化学习' : '未来展望'} (模拟)`,
-            corePoints: "• 这是一个模拟生成的重点。\n• 因为未检测到 API Key，系统显示此默认内容。\n• 请在代码中配置 apiKey 以启用真实生成。",
-            visualElements: "画面中央是一个发光的 AI 大脑，周围环绕着数据流，背景是深邃的宇宙。",
-            layoutDesign: "左侧为大标题与核心观点，右侧预留大面积配图区域。"
-        }))
-    };
-};
-
-const getMockPageContent = () => {
-    return {
-        corePoints: "• (模拟内容) 这是一个单页生成的示例。\n• 点击生成按钮可重新触发。\n• 真实模式下，这里会根据您的标题生成具体内容。",
-        visualElements: "（模拟）角色正在黑板前书写复杂的公式，表情专注。",
-        layoutDesign: "（模拟）建议使用三分法构图，将角色放置在右侧三分之一处。"
-    };
+// --- Helper: Get Layout Instruction ---
+const getLayoutInstruction = (layoutStyle) => {
+    switch (layoutStyle) {
+        case 'creative':
+            return "LAYOUT RULE: Use creative, dynamic layouts. Break the grid, use overlapping elements, asymmetrical designs, tilted panels, or high-impact visual arrangements suitable for the chosen style.";
+        case 'minimalist':
+            return "LAYOUT RULE: Use extreme minimalist layouts (Zen style). Emphasize massive negative space (whitespace), very few elements per slide, and central focal points. Keep it highly breathable.";
+        case 'editorial':
+            return "LAYOUT RULE: Use magazine editorial layouts. Feature strong typographic hierarchy, large bold pull-quotes, dynamic text-wrapping around images, and sophisticated multi-column grid systems.";
+        case 'comic':
+            return "LAYOUT RULE: Use comic book storyboard layouts (漫画分镜排版). Divide the slide into multiple dynamic panels (多格分镜). Incorporate speech bubbles (对话气泡), thought balloons, and action lines. Emphasize sequential visual storytelling.";
+        case 'pictureBook':
+            return "LAYOUT RULE: Use picture book layouts (绘本排版). Emphasize large, full-bleed, borderless, or softly blended illustrations that dominate the slide. Use extremely minimal text elegantly integrated into the negative space of the illustration. Aim for a warm, immersive, and narrative-driven aesthetic.";
+        case 'traditional':
+        default:
+            return "LAYOUT RULE: Use traditional, clean, and well-organized layouts. Maintain strict alignment, clear visual hierarchy, and avoid messy or overly exaggerated elements. Keep it professional and highly readable.";
+    }
 };
 
 // --- API Call Logic: Generate Full Presentation ---
 const generateWithGemini = async (config, language, apiKey) => {
-  const { styleDesc, pageCount, content, uploadedFile, includePersona, targetAudience, structureType } = config;
+  const { styleDesc, pageCount, content, uploadedFile, includePersona, targetAudience, structureType, layoutStyle, customPersona } = config;
 
-  // Mock Mode Check
-  if (!apiKey) {
-      console.warn("No API Key found. Returning Mock Data.");
-      await new Promise(resolve => setTimeout(resolve, 1500)); // Fake delay
-      return getMockPresentation(config);
-  }
+  if (!apiKey) throw new Error("API Key Missing");
 
   const langInstruction = language === 'en' ? 'English' : 'Simplified Chinese (简体中文)';
+  const layoutInstruction = getLayoutInstruction(layoutStyle);
 
-  // Logic to build specific instructions based on structureType
   let structureInstruction = "";
   switch (structureType) {
       case 'story':
-          structureInstruction = "STRUCTURE: NARRATIVE STORY (Storytelling). Structure the presentation like a journey or a movie. Start with a hook/conflict, build up the context, present the solution/climax, and end with a resolution/call to action. Focus on emotional flow and connection.";
+          structureInstruction = "STRUCTURE: NARRATIVE STORY (叙事故事). Strictly use the uploaded materials/provided content, but REORGANIZE it into a compelling narrative or storytelling format. Use elements like background/hook -> conflict/challenge -> resolution -> future outlook to engage the audience emotionally.";
           break;
       case 'detail':
-          structureInstruction = "STRUCTURE: DETAILED ANALYSIS (Academic/Report). Focus on comprehensive information, data, evidence, and logical hierarchy. Each page should contain substantial information, bullet points with sub-details, and clear analysis. Ideal for reading or detailed reports.";
+          structureInstruction = "STRUCTURE: DETAILED CONTENT (内容详细). Thoroughly analyze the uploaded materials/provided content and PRESERVE THE COMPLETE INFORMATION. Create a highly detailed presentation outlining all facts, data points, and logical arguments systematically. Do not omit important details. Ideal for comprehensive reading reports.";
           break;
       case 'keypoint':
-          structureInstruction = "STRUCTURE: KEY POINTS DEMO (Pitch/Steve Jobs style). Focus on EXTREME MINIMALISM. Rule of Three. One big idea per slide. Very few words, high impact. Prioritize punchy slogans and impactful visuals over detailed text.";
+          structureInstruction = "STRUCTURE: KEY POINTS DEMO (重点演示). Extract ONLY the most crucial highlights and core messages from the uploaded materials/provided content. Discard fluff and long explanations. Focus on high-impact summary bullet points and punchy slogans. Designed for a live speech or executive briefing.";
           break;
       default:
           structureInstruction = "STRUCTURE: Standard Presentation structure.";
+  }
+
+  let personaPrompt = "DISABLED.";
+  if (includePersona) {
+      if (customPersona && customPersona.trim() !== "") {
+           personaPrompt = `ENABLED. You MUST use the user's specific custom character: "${customPersona}". It MUST NOT be the main focus. The Global Style description MUST end with: '页面角落加入专属角色（${customPersona}）作为点缀与搭衬，不喧宾夺主。依内容语意仅微调其动作或小道具。' In 'visualElements' for each page, briefly describe this EXACT SAME character's subtle pose or prop that matches the slide content.`;
+      } else {
+           personaPrompt = `ENABLED. You MUST invent ONE specific, consistent character that perfectly fits the Content Topic and Target Audience (e.g., 'a wise owl' for education, 'a floating cyber-bot' for tech). It MUST NOT be the main focus. The Global Style description MUST end with: '根据简报内容量身定制了一个专属角色（并在括号内注明具体形象，例如：一只戴单片眼镜的侦探狗），从头到尾保持该角色形象绝对一致。在页面角落加入此小尺寸角色作为点缀与搭衬，不喧宾夺主。依内容语意仅微调其动作或小道具。' In 'visualElements' for each page, briefly describe this EXACT SAME character's subtle pose or prop that matches the slide content.`;
+      }
   }
 
   const systemPrompt = `
@@ -298,7 +378,7 @@ const generateWithGemini = async (config, language, apiKey) => {
       "topic": "Creative Main Title",
       "globalStyle": {
         "title": "Style Name",
-        "content": "Detailed description of colors, fonts, and mood.${includePersona ? " MUST include this exact sentence at the end: '以角色为主讲，每一页由它介绍内容。依内容语意自动切换表情/姿势/小道具。'" : ""}"
+        "content": "Detailed description of colors, fonts, and mood.${includePersona ? " MUST include this exact sentence at the end: '页面角落加入小尺寸的角色作为点缀与搭衬，不喧宾夺主。依内容语意微调角色的表情或小道具。'" : ""}"
       },
       "pages": [
         {
@@ -315,26 +395,27 @@ const generateWithGemini = async (config, language, apiKey) => {
     1. Generate exactly ${pageCount} pages.
     2. Language: ALL JSON values must be in ${langInstruction}.
     
-    3. **STRUCTURE MODE (${structureType})**:
+    3. ${layoutInstruction}
+    
+    4. **STRUCTURE MODE (${structureType})**:
        ${structureInstruction}
 
-    4. **Design System & Art Direction (CRITICAL)**: 
+    5. **Design System & Art Direction (CRITICAL)**: 
        - You are not just picking a template, you are the Art Director.
-       - Analyze the **User Style** ("${styleDesc}") AND the **Content Topic** ("${content}").
-       - Create a unique "Global Style" that bridges them.
+       - Analyze the **Target Audience** ("${targetAudience || "General Audience"}") and the **User Style** ("${styleDesc}").
+       - Create a unique "Global Style" that bridges them while strictly catering to the Target Audience.
+       - **Crucial Synergy**: If the Structure Mode is "Narrative Story" AND the Style is "Comic/Manga" (or similar), you MUST fuse them into a "Comic Storyboarding (漫划分镜说故事)" style. Use panels, speech bubbles, and sequential visual storytelling.
        - **Requirement**: The 'globalStyle.content' MUST be detailed (approx 50-80 words). It must specify:
-         * **Theme**: A creative name (e.g., "Urban Detective", "Forest Healer").
-         * **Colors**: 3-4 specific colors with mood description.
-         * **Typography**: Font style. *If the style is Comic/Manga/Playful, explicitly instruct to emphasize keywords or 'Chinese Vocabulary' (华文生字) with visual effects (stroke, bold, explosive bubble).*
-         * **Layout**: Structural rules (e.g., "Broken grid", "Overlapping layers", "Tilted panels").
-         * **Visuals**: Specific art style prompts.
-       
-       - Example Logic: If user picks 'Comic' and content is 'Urban Safety', generate 'Urban Detective Comic' style with neon colors and dramatic shadows. If user picks 'Picture Book' and content is 'Mental Health', generate 'Pastel Healing' style.
+         * **Theme**: A creative name.
+         * **Colors**: 3-4 specific colors perfectly suited for the audience.
+         * **Typography**: Font style.
+         * **Layout**: Structural rules strictly adhering to the LAYOUT RULE defined above (${layoutStyle}).
+         * **Visuals**: Specific art style prompts appropriate for the audience.
 
-    5. Persona Mode: ${includePersona ? "ENABLED. The presentation features a main character speaker. The Global Style description MUST end with: '以角色为主讲，每一页由它介绍内容。依内容语意自动切换表情/姿势/小道具。' In 'visualElements' for each page, describe the character's specific pose, expression, or props that match the slide content." : "DISABLED."}
-    6. Target Audience: "${targetAudience || "General Audience"}". Adjust the tone, complexity, and visual style to suit this audience perfectly.
-    7. Content Source: Use this context: "${content}". 
-    ${uploadedFile ? "8. FILE UPLOADED: Use the attached file as the PRIMARY source of truth. Extract key arguments, data points, and structure from it." : "If content is empty, invent a creative topic based on the style."}
+    6. Persona Mode: ${personaPrompt}
+    7. Target Audience: "${targetAudience || "General Audience"}". Adjust the tone and complexity to perfectly match this audience.
+    8. Content Source: Use this context: "${content}". 
+    ${uploadedFile ? "9. FILE UPLOADED: Use the attached file as the PRIMARY source of truth. Extract key arguments, data points, and structure from it." : "If content is empty, invent a creative topic based on the style."}
   `;
 
   let contents = [];
@@ -359,7 +440,7 @@ const generateWithGemini = async (config, language, apiKey) => {
 
   try {
     const response = await fetch(
-      // Changed from preview model to stable public model to avoid Vercel deployment errors
+      // MUST use stable public model for Github/Vercel deployment
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
       {
         method: 'POST',
@@ -403,25 +484,35 @@ const generateWithGemini = async (config, language, apiKey) => {
 
 // --- API Call Logic: Generate Single Page Content ---
 const generatePageContent = async (config, pageTitle, pageCorePoints, currentTopic, globalStyle, language, apiKey) => {
-  const { styleDesc, targetAudience, includePersona, content, uploadedFile, structureType } = config;
-  const langInstruction = language === 'en' ? 'English' : 'Simplified Chinese (简体中文)';
-
+  const { styleDesc, targetAudience, includePersona, content, uploadedFile, structureType, layoutStyle, customPersona } = config;
+  
   if (!apiKey) throw new Error("API Key Missing");
 
-  // Logic to build specific instructions based on structureType for SINGLE PAGE
+  const langInstruction = language === 'en' ? 'English' : 'Simplified Chinese (简体中文)';
+  const layoutInstruction = getLayoutInstruction(layoutStyle);
+
   let structureInstruction = "";
   switch (structureType) {
       case 'story':
-          structureInstruction = "Tone: Storytelling, emotional, narrative flow.";
+          structureInstruction = "Tone: Storytelling, emotional, narrative flow based on provided content.";
           break;
       case 'detail':
-          structureInstruction = "Tone: Academic, detailed, data-driven, comprehensive.";
+          structureInstruction = "Tone: Academic, highly detailed, data-driven, comprehensive based on provided content. Do not omit facts.";
           break;
       case 'keypoint':
-          structureInstruction = "Tone: Punchy, minimalist, impactful, rule of three.";
+          structureInstruction = "Tone: Punchy, minimalist, impactful, extract ONLY core highlights from provided content.";
           break;
       default:
           structureInstruction = "Tone: Standard presentation.";
+  }
+
+  let personaPrompt = "DISABLED.";
+  if (includePersona) {
+      if (customPersona && customPersona.trim() !== "") {
+          personaPrompt = `ENABLED. The slide features the user's custom character: "${customPersona}". Describe this character's subtle pose/expression/props (e.g. 'The custom character in the bottom right looking thoughtful'). It must NOT dominate the visual.`;
+      } else {
+          personaPrompt = `ENABLED. The slide features the EXACT SAME specific character invented in the Global Style. Describe this character's subtle pose/expression/props (e.g. 'The SAME smart owl icon in the bottom right looking thoughtful'). It must NOT dominate the visual and MUST maintain absolute visual consistency with other pages.`;
+      }
   }
 
   const userPointsContext = pageCorePoints && pageCorePoints.trim() !== "" 
@@ -437,8 +528,9 @@ const generatePageContent = async (config, pageTitle, pageCorePoints, currentTop
     - Target Audience: "${targetAudience || "General Audience"}"
     - Global Style: "${globalStyle.title}" (${globalStyle.content})
     - User Style Preference: "${styleDesc}"
+    - Layout Rule: ${layoutInstruction}
     - Structure Mode: ${structureType} (${structureInstruction})
-    - Persona Mode: ${includePersona ? "ENABLED. The slide MUST feature the main character. Describe their specific pose/expression/props for this slide based on the content (e.g. 'Character looking thoughtful with hand on chin')." : "DISABLED"}
+    - Persona Mode: ${personaPrompt}
     - User Provided Global Content/Context: "${content}"
     - Slide Title: "${pageTitle}"
     - Slide Specific Input: ${userPointsContext}
@@ -447,20 +539,22 @@ const generatePageContent = async (config, pageTitle, pageCorePoints, currentTop
     Generate/Refine content for a single slide.
 
     CRITICAL INSTRUCTION: 
-    1. IF 'User provided specific points' exists: Use them as the ABSOLUTE FOUNDATION. Refine the text for impact (bullet points) matching the Structure Mode but do NOT change the core meaning. Generate 'visualElements' and 'layoutDesign' that specifically visualize THESE points.
-    2. IF 'User provided specific points' is empty: Generate core points strictly based on the User Provided Global Content (text or uploaded file) and the Slide Title. Do NOT deviate from the source material.
-    3. 'visualElements' and 'layoutDesign' must always be generated/regenerated based on the final core points.
+    1. HIGH CONSISTENCY: The generated content MUST perfectly align with the original presentation's topic, depth, and tone. Do NOT deviate, drift off-topic, or hallucinate wild new concepts. Stay highly grounded.
+    2. IF 'User provided specific points' exists: Treat it as a STRICT BASELINE. Do NOT completely rewrite it. Only apply light polishing or formatting (e.g., converting to bullet points) to match the Structure Mode. Preserve the original meaning, phrasing, and structure as much as possible.
+    3. IF 'User provided specific points' is empty: Generate core points strictly based on the User Provided Global Content (text or uploaded file) and the Slide Title. Do NOT deviate from the source material. Adapt verbosity to Structure Mode (Story vs Detail vs Keypoint).
+    4. Ensure the 'layoutDesign' strictly follows the Layout Rule (${layoutStyle}).
+    5. 'visualElements' and 'layoutDesign' must always be generated/regenerated specifically to visualize the final core points.
 
     Output MUST be valid JSON with this structure:
     {
-      "corePoints": "Key content points (bullet points preferred). If user provided points, refine them. If not, extract from source.",
-      "visualElements": "Description of visual elements in ${langInstruction}, consistent with the Global Style.${includePersona ? " MUST include description of character's pose/expression." : ""}",
-      "layoutDesign": "Specific layout instructions, consistent with the Global Style.${includePersona ? " MUST reserve space for presenter character." : ""} Ensure layout highlights key vocabulary if Global Style mentions it."
+      "corePoints": "Key content points (bullet points preferred). If user provided points, preserve them closely and only refine lightly. If not, extract from source based on Structure Mode.",
+      "visualElements": "Description of visual elements in ${langInstruction}, consistent with the Global Style.${includePersona ? " MUST include description of the EXACT SAME character's subtle pose/expression." : ""}",
+      "layoutDesign": "Specific layout instructions, strictly following the Layout Rule.${includePersona ? " MUST reserve a small space (e.g., a corner) for the decorative presenter character." : ""}"
     }
 
     CONSTRAINTS:
     1. Language: ${langInstruction}.
-    2. Tone: Match the target audience.
+    2. Tone: Match the target audience and Structure Mode.
   `;
 
   let contents = [];
@@ -485,7 +579,7 @@ const generatePageContent = async (config, pageTitle, pageCorePoints, currentTop
 
   try {
     const response = await fetch(
-      // Changed from preview model to stable public model to avoid Vercel deployment errors
+      // MUST use stable public model for Github/Vercel deployment
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
       {
         method: 'POST',
@@ -536,7 +630,6 @@ const Header = ({ language, setLanguage, t }) => (
         </div>
       </div>
       
-      {/* Language Toggle */}
       <button 
         onClick={() => setLanguage(prev => prev === 'zh' ? 'en' : 'zh')}
         className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-100 transition-colors border border-transparent hover:border-slate-200"
@@ -552,15 +645,12 @@ const Header = ({ language, setLanguage, t }) => (
 
 const ApiKeyInput = ({ apiKey, setApiKey, t }) => {
     const [showKey, setShowKey] = useState(false);
-    // Initialize editing state: if no key, edit mode is true; if key exists, edit mode is false
     const [isEditing, setIsEditing] = useState(!apiKey);
 
-    // If apiKey is cleared externally, ensure we go back to edit mode
     useEffect(() => {
         if (!apiKey) setIsEditing(true);
     }, [apiKey]);
     
-    // View Mode: Display when key is set and not editing
     if (!isEditing && apiKey) {
         return (
             <div className="bg-violet-50 border border-violet-100 rounded-2xl p-4 mb-8 flex items-center justify-between animate-fade-in relative overflow-hidden shadow-sm">
@@ -587,7 +677,6 @@ const ApiKeyInput = ({ apiKey, setApiKey, t }) => {
         );
     }
 
-    // Edit Mode: Display input field
     return (
         <div className="bg-violet-50 border border-violet-100 rounded-2xl p-6 mb-8 relative overflow-hidden animate-fade-in">
             <div className="absolute top-0 right-0 w-32 h-32 bg-violet-200 rounded-full blur-3xl opacity-30 -mr-10 -mt-10"></div>
@@ -628,7 +717,6 @@ const ApiKeyInput = ({ apiKey, setApiKey, t }) => {
                     </div>
                 </div>
                 
-                {/* Done/Save Button - Only show when key is valid */}
                 {apiKey && apiKey.startsWith("AIza") && (
                      <div className="mt-4 flex items-center justify-between animate-fade-in">
                          <div className="flex items-center gap-1.5 text-xs text-green-600 font-medium">
@@ -653,6 +741,7 @@ const InputStep = ({ config, updateConfig, onGenerate, isGenerating, t, language
   const fileInputRef = useRef(null);
   const stylePresets = GET_STYLE_PRESETS(language);
   const structureOptions = GET_STRUCTURE_OPTIONS(language, t);
+  const layoutOptions = GET_LAYOUT_OPTIONS(language, t);
 
   const handleFileClick = () => {
     fileInputRef.current.click();
@@ -678,7 +767,7 @@ const InputStep = ({ config, updateConfig, onGenerate, isGenerating, t, language
   return (
     <div className="max-w-5xl mx-auto py-10 px-4 animate-fade-in">
       
-      {/* API Key Input Section - New Addition */}
+      {/* API Key Input Section */}
       <ApiKeyInput apiKey={apiKey} setApiKey={setApiKey} t={t} />
 
       <div className="bg-white rounded-3xl shadow-xl shadow-slate-200/50 p-8 border border-white relative overflow-hidden">
@@ -698,6 +787,70 @@ const InputStep = ({ config, updateConfig, onGenerate, isGenerating, t, language
         </div>
 
         <div className="space-y-8">
+            {/* Layout Type Selection */}
+            <div>
+                 <label className="block text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
+                    <LayoutGrid className="w-4 h-4 text-violet-500" />
+                    {t.layoutStyleLabel}
+                 </label>
+                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    {layoutOptions.map((option) => (
+                        <button
+                            key={option.id}
+                            onClick={() => updateConfig('layoutStyle', option.id)}
+                            className={`flex flex-col items-start p-3 rounded-xl border transition-all ${
+                                config.layoutStyle === option.id
+                                ? `${option.color.replace('text-', 'border-').replace('bg-', 'bg-opacity-20 ')} shadow-md ring-1 ring-offset-1 ring-transparent ring-violet-500`
+                                : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                            }`}
+                        >
+                            <div className={`p-2 rounded-lg flex-shrink-0 mb-2 ${config.layoutStyle === option.id ? 'bg-white shadow-sm' : 'bg-slate-100'}`}>
+                                {option.icon}
+                            </div>
+                            <div className="text-left">
+                                <h3 className={`text-sm font-bold mb-1 ${config.layoutStyle === option.id ? 'text-slate-900' : 'text-slate-700'}`}>
+                                    {option.label}
+                                </h3>
+                                <p className="text-xs text-slate-500 leading-relaxed line-clamp-2">
+                                    {option.desc}
+                                </p>
+                            </div>
+                        </button>
+                    ))}
+                 </div>
+            </div>
+
+            {/* Structure Type Selection */}
+            <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
+                    <Layout className="w-4 h-4 text-violet-500" />
+                    {t.structureLabel}
+                </label>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {structureOptions.map((option) => (
+                        <button
+                            key={option.id}
+                            onClick={() => updateConfig('structureType', option.id)}
+                            className={`flex flex-col items-start p-4 rounded-xl border transition-all ${
+                                config.structureType === option.id
+                                ? `${option.color.replace('text-', 'border-').replace('bg-', 'bg-opacity-20 ')} shadow-md ring-1 ring-offset-1 ring-transparent`
+                                : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                            } ${config.structureType === option.id ? 'ring-violet-500' : ''}`}
+                        >
+                            <div className={`p-2 rounded-lg mb-3 ${config.structureType === option.id ? 'bg-white shadow-sm' : 'bg-slate-100'}`}>
+                                {option.icon}
+                            </div>
+                            <h3 className={`text-sm font-bold mb-1 ${config.structureType === option.id ? 'text-slate-900' : 'text-slate-700'}`}>
+                                {option.label}
+                            </h3>
+                            <p className="text-xs text-slate-500 text-left leading-relaxed">
+                                {option.desc}
+                            </p>
+                        </button>
+                    ))}
+                </div>
+            </div>
+
             {/* Style Presets */}
             <div>
                  <label className="block text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
@@ -733,62 +886,47 @@ const InputStep = ({ config, updateConfig, onGenerate, isGenerating, t, language
                 className="w-full h-24 p-4 bg-slate-50 border-0 rounded-xl text-slate-700 placeholder:text-slate-400 focus:ring-2 focus:ring-violet-500 focus:bg-white transition-all resize-none shadow-inner"
               />
             </div>
-            
-            {/* NEW: Structure Type Selection */}
-            <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
-                    <Layout className="w-4 h-4 text-violet-500" />
-                    {t.structureLabel}
-                </label>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {structureOptions.map((option) => (
-                        <button
-                            key={option.id}
-                            onClick={() => updateConfig('structureType', option.id)}
-                            className={`flex flex-col items-start p-4 rounded-xl border transition-all ${
-                                config.structureType === option.id
-                                ? `${option.color.replace('text-', 'border-').replace('bg-', 'bg-opacity-20 ')} shadow-md ring-1 ring-offset-1 ring-transparent`
-                                : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50'
-                            } ${config.structureType === option.id ? 'ring-violet-500' : ''}`}
-                        >
-                            <div className={`p-2 rounded-lg mb-3 ${config.structureType === option.id ? 'bg-white shadow-sm' : 'bg-slate-100'}`}>
-                                {option.icon}
-                            </div>
-                            <h3 className={`text-sm font-bold mb-1 ${config.structureType === option.id ? 'text-slate-900' : 'text-slate-700'}`}>
-                                {option.label}
-                            </h3>
-                            <p className="text-xs text-slate-500 text-left leading-relaxed">
-                                {option.desc}
-                            </p>
-                        </button>
-                    ))}
-                </div>
-            </div>
 
             {/* 个人形象融合设定 */}
-            <div 
-                onClick={() => updateConfig('includePersona', !config.includePersona)}
-                className={`flex items-center gap-4 p-5 rounded-xl border cursor-pointer transition-all duration-200 ${
-                    config.includePersona 
-                    ? 'bg-violet-50 border-violet-200 shadow-sm' 
-                    : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50'
-                }`}
-            >
-                <div className={`flex-shrink-0 w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-colors ${
-                    config.includePersona 
-                    ? 'bg-violet-600 border-violet-600' 
-                    : 'bg-white border-slate-300'
-                }`}>
-                    {config.includePersona && <Check className="w-4 h-4 text-white stroke-[3]" />}
-                </div>
-                <div>
-                    <div className="flex items-center gap-2">
-                        <UserCircle2 className={`w-5 h-5 ${config.includePersona ? 'text-violet-600' : 'text-slate-500'}`} />
-                        <h4 className={`text-sm font-bold ${config.includePersona ? 'text-violet-900' : 'text-slate-700'}`}>
-                            {t.includePersona}
-                        </h4>
+            <div>
+                <div 
+                    onClick={() => updateConfig('includePersona', !config.includePersona)}
+                    className={`flex items-center gap-4 p-5 rounded-xl border cursor-pointer transition-all duration-200 ${
+                        config.includePersona 
+                        ? 'bg-violet-50 border-violet-200 shadow-sm' 
+                        : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                    }`}
+                >
+                    <div className={`flex-shrink-0 w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-colors ${
+                        config.includePersona 
+                        ? 'bg-violet-600 border-violet-600' 
+                        : 'bg-white border-slate-300'
+                    }`}>
+                        {config.includePersona && <Check className="w-4 h-4 text-white stroke-[3]" />}
+                    </div>
+                    <div>
+                        <div className="flex items-center gap-2">
+                            <UserCircle2 className={`w-5 h-5 ${config.includePersona ? 'text-violet-600' : 'text-slate-500'}`} />
+                            <h4 className={`text-sm font-bold ${config.includePersona ? 'text-violet-900' : 'text-slate-700'}`}>
+                                {t.includePersona}
+                            </h4>
+                        </div>
                     </div>
                 </div>
+                
+                {/* 自定义角色输入框 - 仅在勾选时展开 */}
+                {config.includePersona && (
+                    <div className="mt-3 pl-12 animate-fade-in-up">
+                        <label className="block text-xs font-semibold text-slate-500 mb-1">{t.customPersonaLabel}</label>
+                        <input 
+                            type="text" 
+                            value={config.customPersona || ''}
+                            onChange={(e) => updateConfig('customPersona', e.target.value)}
+                            placeholder={t.customPersonaPlaceholder}
+                            className="w-full p-3 text-sm bg-violet-50/50 border border-violet-100 rounded-xl text-slate-700 placeholder:text-slate-400 focus:ring-2 focus:ring-violet-500 focus:bg-white transition-all outline-none shadow-inner"
+                        />
+                    </div>
+                )}
             </div>
 
             {/* Content Section Header */}
@@ -799,7 +937,7 @@ const InputStep = ({ config, updateConfig, onGenerate, isGenerating, t, language
                 <h2 className="text-xl font-bold text-slate-800">{t.contentLabel}</h2>
             </div>
 
-            {/* 新增：目标受众 */}
+            {/* 目标受众 */}
             <div>
                <label className="block text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
                    <Users className="w-4 h-4 text-blue-500" />
@@ -948,19 +1086,15 @@ const ResultStep = ({ resultData, setResultData, onReset, config, t, language, a
   };
 
   const handleMovePage = (index, direction) => {
-      // direction: -1 for up, 1 for down
       const newPages = [...resultData.pages];
       
-      // Boundary checks
-      if (direction === -1 && index === 0) return; // Can't move up first page
-      if (direction === 1 && index === newPages.length - 1) return; // Can't move down last page
+      if (direction === -1 && index === 0) return; 
+      if (direction === 1 && index === newPages.length - 1) return; 
       
       const targetIndex = index + direction;
       
-      // Swap pages
       [newPages[index], newPages[targetIndex]] = [newPages[targetIndex], newPages[index]];
       
-      // Re-index page numbers
       const reindexedPages = newPages.map((page, idx) => ({
           ...page,
           page: idx + 1
@@ -1006,11 +1140,10 @@ const ResultStep = ({ resultData, setResultData, onReset, config, t, language, a
     setGeneratingPages(prev => ({ ...prev, [index]: true }));
 
     try {
-        // Pass page.corePoints to the generator
         const generatedContent = await generatePageContent(
             config, 
             page.title, 
-            page.corePoints, // Pass user edited core points
+            page.corePoints, 
             resultData.topic, 
             resultData.globalStyle,
             language,
@@ -1025,7 +1158,7 @@ const ResultStep = ({ resultData, setResultData, onReset, config, t, language, a
         setResultData({ ...resultData, pages: newPages });
     } catch (error) {
         console.error("Page Gen Error:", error);
-        alert("Failed to generate page content. Check API Key.");
+        alert("Failed to generate page content.");
     } finally {
         setGeneratingPages(prev => ({ ...prev, [index]: false }));
     }
@@ -1266,8 +1399,10 @@ export default function App() {
       content: "",
       uploadedFile: null,
       includePersona: false,
+      customPersona: "", // 存储自定义角色
       targetAudience: "" ,
-      structureType: 'keypoint' // Default structure
+      structureType: 'keypoint', // Default structure
+      layoutStyle: 'traditional' // Default layout
   });
   const [resultData, setResultData] = useState(null);
 
@@ -1287,7 +1422,6 @@ export default function App() {
       }
   }, [apiKey]);
 
-
   const t = TRANSLATIONS[language];
 
   const updateConfig = (key, value) => {
@@ -1303,7 +1437,7 @@ export default function App() {
     setIsGenerating(true);
     
     try {
-        // Pass language and API Key to generator
+        // Pass apiKey to generator
         const generatedData = await generateWithGemini(config, language, apiKey);
         setResultData(generatedData);
         setStep('result');
