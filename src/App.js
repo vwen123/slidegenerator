@@ -777,12 +777,12 @@ const InputStep = ({ config, updateConfig, onGenerate, isGenerating, t, language
             </div>
 
             {/* 开关设定组 */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
                 {/* 个人形象融合设定 */}
-                <div>
+                <div className="flex flex-col">
                     <div 
                         onClick={() => updateConfig('includePersona', !config.includePersona)}
-                        className={`flex items-center gap-4 p-5 rounded-xl border cursor-pointer transition-all duration-200 h-full ${
+                        className={`flex items-center gap-4 p-5 rounded-xl border cursor-pointer transition-all duration-200 ${
                             config.includePersona 
                             ? 'bg-violet-50 border-violet-200 shadow-sm' 
                             : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50'
@@ -821,10 +821,10 @@ const InputStep = ({ config, updateConfig, onGenerate, isGenerating, t, language
                 </div>
 
                 {/* 严格忠于原文设定 */}
-                <div>
+                <div className="flex flex-col">
                     <div 
                         onClick={() => updateConfig('strictExtraction', !config.strictExtraction)}
-                        className={`flex items-center gap-4 p-5 rounded-xl border cursor-pointer transition-all duration-200 h-full ${
+                        className={`flex items-center gap-4 p-5 rounded-xl border cursor-pointer transition-all duration-200 ${
                             config.strictExtraction 
                             ? 'bg-violet-50 border-violet-200 shadow-sm' 
                             : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50'
