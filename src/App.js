@@ -267,7 +267,7 @@ const generateWithGemini = async (config, language, apiKey) => {
   let structureInstruction = "";
   switch (structureType) {
       case 'story':
-          structureInstruction = "STRUCTURE: NARRATIVE STORY. Reorganize the exact source content into a chronological/storytelling flow (Background -> Conflict -> Resolution) without changing the vocabulary.";
+          structureInstruction = "STRUCTURE: NARRATIVE STORY. Reorganize the exact source content into a chronological/storytelling flow (Background -> Conflict -> Resolution).";
           break;
       case 'detail':
           structureInstruction = "STRUCTURE: DETAILED CONTENT. Preserve almost all facts, data, and details from the source. Create a highly comprehensive report layout.";
@@ -300,8 +300,14 @@ const generateWithGemini = async (config, language, apiKey) => {
 
   const systemPrompt = `
     You are a professional Presentation Designer and AI Art Director.
-    Your task is to generate a structured outline for a presentation based on the user's input.
-    
+    Your task is to deeply analyze the user's source content and transform it into a structured presentation outline.
+
+    CORE ANALYTICAL FRAMEWORK (You MUST filter the content through these 4 pillars):
+    1. TARGET AUDIENCE: "${targetAudience || "General Audience"}". The depth, tone, and visual appeal MUST be specifically tailored for them.
+    2. DESIGN STYLE: "${styleDesc}". You MUST translate this requested style into a cohesive 'globalStyle' and apply it conceptually to every 'visualElements'.
+    3. STRUCTURE MODE: ${structureType} (${structureInstruction}). The way you extract, logically group, and present the Source Content MUST strictly follow this narrative or data structure.
+    4. LAYOUT RULE: ${layoutStyle} (${layoutInstruction}). Every page's 'layoutDesign' must be dictated by this specific layout system.
+
     Output MUST be valid JSON with this structure:
     {
       "topic": "Creative Main Title based on source",
@@ -313,25 +319,21 @@ const generateWithGemini = async (config, language, apiKey) => {
         {
           "page": 1,
           "title": "Page Title",
-          "corePoints": "Extracted key points.",
+          "corePoints": "Extracted key points based on Structure Mode.",
           "visualElements": "Description of visual elements in ${langInstruction}.",
-          "layoutDesign": "Specific layout instructions"
+          "layoutDesign": "Specific layout instructions following the Layout Rule"
         }
       ]
     }
 
     ${contentRule}
 
-    CONSTRAINTS & GENERATION RULES:
-    1. Generate exactly ${pageCount} pages.
-    2. Language: ALL JSON values must be in ${langInstruction}.
-    3. DESIGN STYLE: Strictly apply the requested visual style: "${styleDesc}". Heavily base the 'globalStyle' and 'visualElements' on this.
-    4. TARGET AUDIENCE: Tailor the tone, depth, and presentation appeal specifically for: "${targetAudience || "General Audience"}".
-    5. ${layoutInstruction}
-    6. ${structureInstruction}
-    7. Persona Mode: ${personaPrompt}
-    8. Content Source: Use this context: "${content}". 
-    ${uploadedFile ? "9. FILE UPLOADED: Use the attached file as the STRICT TRUTH. Extract exact quotes from it." : ""}
+    ADDITIONAL CONSTRAINTS:
+    - Generate exactly ${pageCount} pages.
+    - Language: ALL JSON values must be in ${langInstruction}.
+    - Persona Mode: ${personaPrompt}
+    - Content Source: Use this context: "${content}". 
+    ${uploadedFile ? "- FILE UPLOADED: Use the attached file as the STRICT PRIMARY SOURCE." : ""}
   `;
 
   let contents = [];
@@ -432,11 +434,13 @@ const generatePageContent = async (config, pageTitle, pageCorePoints, currentTop
     You are a professional Presentation Designer.
     Refine slide "${pageTitle}" for topic "${currentTopic}".
     
+    CORE ANALYTICAL FRAMEWORK (Strictly apply to this slide):
+    1. Target Audience: "${targetAudience || "General Audience"}" (Adjust text tone to fit them perfectly).
+    2. Global Style & User Preference: "${globalStyle.title}" (${globalStyle.content}) + "${styleDesc}".
+    3. Layout Rule: ${layoutInstruction} (Dictates the 'layoutDesign').
+    4. Structure Mode: ${structureType} (${structureInstruction}) (Dictates how much detail goes into 'corePoints').
+    
     CONTEXT & RULES:
-    - Target Audience: "${targetAudience || "General Audience"}" (Adjust tone to fit them perfectly)
-    - Global Style & Design: "${globalStyle.title}" (${globalStyle.content}) + User Preference: "${styleDesc}"
-    - Layout Rule: ${layoutInstruction}
-    - Structure Mode: ${structureType} (${structureInstruction})
     - Persona Mode: ${personaPrompt}
     - User Provided Global Content/Context: "${content}"
     - Slide Specific Input: ${userPointsContext}
@@ -445,9 +449,9 @@ const generatePageContent = async (config, pageTitle, pageCorePoints, currentTop
 
     Output MUST be valid JSON with this structure:
     {
-      "corePoints": "Extracted EXACT text/quotes, formatted as bullet points.",
+      "corePoints": "Extracted text/quotes based on Structure Mode.",
       "visualElements": "Description of visuals in ${langInstruction}.",
-      "layoutDesign": "Layout instructions matching the layout rule."
+      "layoutDesign": "Layout instructions strictly matching the layout rule."
     }
 
     CONSTRAINTS:
