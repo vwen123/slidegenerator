@@ -282,9 +282,9 @@ const generateWithGemini = async (config, language, apiKey) => {
   let personaPrompt = "DISABLED.";
   if (includePersona) {
       if (customPersona && customPersona.trim() !== "") {
-           personaPrompt = `ENABLED. You MUST use the user's specific custom character: "${customPersona}". It MUST NOT be the main focus. The Global Style description MUST end with: '页面角落加入专属角色（${customPersona}）作为点缀与搭衬，不喧宾夺主。依内容语意仅微调其动作或小道具。' In 'visualElements' for each page, briefly describe this EXACT SAME character's subtle pose or prop.`;
+           personaPrompt = `ENABLED. You MUST use the user's specific custom character: "${customPersona}". It MUST NOT be the main focus. The Global Style description MUST end with: '页面角落加入专属角色（${customPersona}）作为点缀与搭衬，不喧宾夺主。角色保持一致，贯穿始终。依内容语意仅微调其动作或小道具。' In 'visualElements' for each page, briefly describe this EXACT SAME character's subtle pose or prop.`;
       } else {
-           personaPrompt = `ENABLED. Invent ONE specific, consistent character. The Global Style description MUST end with: '根据简报内容量身定制了一个专属角色（并在括号内注明具体形象，例如：一只戴单片眼镜的侦探狗），从头到尾保持该角色形象绝对一致。在页面角落加入此小尺寸角色作为点缀与搭衬，不喧宾夺主。依内容语意仅微调其动作或小道具。' In 'visualElements' for each page, briefly describe this EXACT SAME character's subtle pose or prop.`;
+           personaPrompt = `ENABLED. Invent ONE specific, consistent character. The Global Style description MUST end with: '根据简报内容量身定制了一个专属角色（并在括号内注明具体形象，例如：一只戴单片眼镜的侦探狗）。在页面角落加入此小尺寸角色作为点缀与搭衬，不喧宾夺主。角色保持一致，贯穿始终。依内容语意仅微调其动作或小道具。' In 'visualElements' for each page, briefly describe this EXACT SAME character's subtle pose or prop.`;
       }
   }
 
@@ -322,15 +322,16 @@ const generateWithGemini = async (config, language, apiKey) => {
 
     ${contentRule}
 
-    CONSTRAINTS:
+    CONSTRAINTS & GENERATION RULES:
     1. Generate exactly ${pageCount} pages.
     2. Language: ALL JSON values must be in ${langInstruction}.
-    3. ${layoutInstruction}
-    4. ${structureInstruction}
-    5. Persona Mode: ${personaPrompt}
-    6. Target Audience: "${targetAudience || "General Audience"}".
-    7. Content Source: Use this context: "${content}". 
-    ${uploadedFile ? "8. FILE UPLOADED: Use the attached file as the STRICT TRUTH. Extract exact quotes from it." : ""}
+    3. DESIGN STYLE: Strictly apply the requested visual style: "${styleDesc}". Heavily base the 'globalStyle' and 'visualElements' on this.
+    4. TARGET AUDIENCE: Tailor the tone, depth, and presentation appeal specifically for: "${targetAudience || "General Audience"}".
+    5. ${layoutInstruction}
+    6. ${structureInstruction}
+    7. Persona Mode: ${personaPrompt}
+    8. Content Source: Use this context: "${content}". 
+    ${uploadedFile ? "9. FILE UPLOADED: Use the attached file as the STRICT TRUTH. Extract exact quotes from it." : ""}
   `;
 
   let contents = [];
@@ -408,7 +409,10 @@ const generatePageContent = async (config, pageTitle, pageCorePoints, currentTop
   else if (structureType === 'detail') structureInstruction = "Provide comprehensive details.";
   else structureInstruction = "Provide minimal core highlights.";
 
-  let personaPrompt = includePersona ? (customPersona ? `ENABLED. Use custom character: "${customPersona}".` : `ENABLED. Use the exact same character defined in Global Style.`) : "DISABLED.";
+  let personaPrompt = "DISABLED.";
+  if (includePersona) {
+      personaPrompt = `ENABLED. The slide features a character. ${customPersona ? `Custom character: "${customPersona}".` : `Use the exact same character defined in Global Style.`} Rule: 角色保持一致，贯穿始终 (Character must be strictly consistent and appear throughout). Describe its subtle pose/props without dominating the visual.`;
+  }
 
   let contentRule = strictExtraction
       ? `CRITICAL CONTENT RULE (STRICT TEXT FIDELITY):
@@ -428,9 +432,9 @@ const generatePageContent = async (config, pageTitle, pageCorePoints, currentTop
     You are a professional Presentation Designer.
     Refine slide "${pageTitle}" for topic "${currentTopic}".
     
-    CONTEXT:
-    - Target Audience: "${targetAudience || "General Audience"}"
-    - Global Style: "${globalStyle.title}" (${globalStyle.content})
+    CONTEXT & RULES:
+    - Target Audience: "${targetAudience || "General Audience"}" (Adjust tone to fit them perfectly)
+    - Global Style & Design: "${globalStyle.title}" (${globalStyle.content}) + User Preference: "${styleDesc}"
     - Layout Rule: ${layoutInstruction}
     - Structure Mode: ${structureType} (${structureInstruction})
     - Persona Mode: ${personaPrompt}
