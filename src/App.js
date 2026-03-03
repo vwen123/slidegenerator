@@ -33,7 +33,12 @@ import {
   Eye,          
   EyeOff,       
   ExternalLink,
-  Quote
+  Quote,
+  Play,
+  HelpCircle,
+  Zap,
+  Flag,
+  Layers
 } from 'lucide-react';
 
 // --- Translations ---
@@ -72,9 +77,19 @@ const TRANSLATIONS = {
     structureDetailedDesc: "保留完整资讯与数据，制作详尽书面报告",
     structureKeypoint: "重点演示",
     structureKeypointDesc: "精准提取核心重点，适合口头演讲演示",
+    presentationElementsLabel: "简报特殊元素 (可多选)",
+    elementIntro: "导入 (Hook)",
+    elementIntroDesc: "开场提问引发兴趣",
+    elementQuestions: "提问 (Question)",
+    elementQuestionsDesc: "讲解前后引导思考",
+    elementInteraction: "互动 (Interact)",
+    elementInteractionDesc: "巩固知识点的小活动",
+    elementConclusion: "结语 (Conclusion)",
+    elementConclusionDesc: "最后的统整与回顾",
     includePersona: "融合角色设定",
+    elementPersonaDesc: "加入专属角色点缀",
     strictExtractionLabel: "严格忠于原文",
-    strictExtractionDesc: "开启后，AI 将直接摘录原文词句，禁止同义词替换或改写，适合课本/法条。",
+    elementStrictDesc: "原汁原味提取原文",
     customPersonaLabel: "自定义 IP 角色 (选填)",
     customPersonaPlaceholder: "描述您的专属角色，例如：一只戴着红帽子的蓝猫...",
     targetAudience: "目标受众 (Target Audience)",
@@ -143,9 +158,19 @@ const TRANSLATIONS = {
     structureDetailedDesc: "Retain full info & data for a comprehensive report",
     structureKeypoint: "Key Points",
     structureKeypointDesc: "Extract core highlights for speeches & pitches",
-    includePersona: "Integrate Character Setting",
-    strictExtractionLabel: "Strict Text Extraction",
-    strictExtractionDesc: "When enabled, AI will extract exact quotes without paraphrasing or rewriting.",
+    presentationElementsLabel: "Special Elements (Multi-select)",
+    elementIntro: "Intro (Hook)",
+    elementIntroDesc: "Opening question to engage",
+    elementQuestions: "Questions",
+    elementQuestionsDesc: "Provoke thought during content",
+    elementInteraction: "Interaction",
+    elementInteractionDesc: "Activities to consolidate knowledge",
+    elementConclusion: "Conclusion",
+    elementConclusionDesc: "Final summary and review",
+    includePersona: "Include Persona",
+    elementPersonaDesc: "Consistent IP character",
+    strictExtractionLabel: "Strict Fidelity",
+    elementStrictDesc: "Exact quotes, no rewrites",
     customPersonaLabel: "Custom IP Character (Optional)",
     customPersonaPlaceholder: "Describe your character, e.g., A blue cat wearing a red hat...",
     targetAudience: "Target Audience",
@@ -185,106 +210,26 @@ const TRANSLATIONS = {
 // --- Style Presets ---
 const GET_STYLE_PRESETS = (lang) => {
   const presets = [
-    { 
-      id: 1, 
-      label: lang === 'zh' ? "吉卜力自然风" : "Ghibli Natural", 
-      value: lang === 'zh' ? "吉卜力动画风格，高饱和度的蓝天白云，茂密的绿色植被，手绘水彩质感。" : "Ghibli animation style, high saturation blue sky, lush green vegetation, hand-painted watercolor texture." 
-    },
-    { 
-      id: 2, 
-      label: lang === 'zh' ? "游戏任务地图" : "Game Quest Map", 
-      value: lang === 'zh' ? "ISO 2.5D 视角，游戏 UI 界面元素，任务节点路径，像素或矢量风格。" : "ISO 2.5D perspective, game UI elements, quest path, pixel or vector style." 
-    },
-    { 
-      id: 3, 
-      label: lang === 'zh' ? "漫画风格" : "Comic/Manga", 
-      value: lang === 'zh' ? "高对比度波普色彩，使用对话气泡、速度线、粗体大字强调关键词。" : "High contrast pop colors, using speech bubbles, speed lines, bold characters to emphasize keywords." 
-    },
-    { 
-      id: 4, 
-      label: lang === 'zh' ? "水彩风格" : "Watercolor", 
-      value: lang === 'zh' ? "柔和的水痕晕染，透明感，艺术气息，优雅的手绘外观。" : "Soft water stains, transparency, artistic atmosphere, elegant hand-painted look." 
-    },
-    { 
-      id: 5, 
-      label: lang === 'zh' ? "粉彩柔和" : "Pastel Soft", 
-      value: lang === 'zh' ? "低饱和度马卡龙色系，梦幻、轻盈、柔和的视觉感受。" : "Low saturation macaron colors, dreamy, light, and soft visual experience." 
-    },
-    { 
-      id: 6, 
-      label: lang === 'zh' ? "手绘插画" : "Hand-drawn", 
-      value: lang === 'zh' ? "温暖亲切，手绘风格图标和边框，自然不拘束的线条。" : "Warm and friendly, hand-drawn icons and borders, natural lines." 
-    },
-    { 
-      id: 7, 
-      label: lang === 'zh' ? "温暖疗愈" : "Warm & Healing", 
-      value: lang === 'zh' ? "大地色系，柔和的圆角，自然纹理，营造放松信任的氛围。" : "Earth tones, soft rounded corners, natural textures, trusting atmosphere." 
-    },
-    { 
-      id: 8, 
-      label: lang === 'zh' ? "日系漫画" : "Japanese Manga", 
-      value: lang === 'zh' ? "经典日系漫画风格，黑白网点，丰富情感表达，连续的分镜排版。" : "Classic manga style, monochrome screentones, expressive emotions, sequential panel layout." 
-    },
-    { 
-      id: 9, 
-      label: lang === 'zh' ? "复古怀旧" : "Retro Nostalgic", 
-      value: lang === 'zh' ? "低保真质感，80/90年代配色，复古衬线字体，胶片滤镜效果。" : "Lo-fi texture, 80s/90s color scheme, retro serif fonts, film filter effects." 
-    },
-    { 
-      id: 10, 
-      label: lang === 'zh' ? "活泼童趣" : "Playful & Childlike", 
-      value: lang === 'zh' ? "高饱和三原色，简单的几何图形，充满活力的涂鸦风格。" : "High saturation primary colors, simple geometric shapes, doodle style." 
-    },
-    { 
-      id: 11, 
-      label: lang === 'zh' ? "自然有机" : "Natural Organic", 
-      value: lang === 'zh' ? "再生纸纹理，植物元素，绿色和土色调，环保自然感。" : "Recycled paper texture, plant elements, green and earthy tones, eco-friendly feel." 
-    },
-    { 
-      id: 12, 
-      label: lang === 'zh' ? "赛博庞克" : "Cyberpunk", 
-      value: lang === 'zh' ? "霓虹对比色，深色背景，故障艺术，未来科技美学。" : "Neon contrast colors, dark background, Glitch Art, futuristic aesthetics." 
-    },
-    { 
-      id: 13, 
-      label: lang === 'zh' ? "扁平化设计" : "Flat Design", 
-      value: lang === 'zh' ? "无阴影，纯色色块，矢量图标，现代简洁的 UI 风格。" : "No shadows, solid color blocks, vector icons, modern UI style." 
-    },
-    { 
-      id: 14, 
-      label: lang === 'zh' ? "绘本治愈" : "Picture Book Therapy", 
-      value: lang === 'zh' ? "柔和色调，隐喻意象，专注于情感表达和故事性。" : "Soft tones, metaphorical imagery, focusing on emotional storytelling." 
-    },
-    { 
-      id: 15, 
-      label: lang === 'zh' ? "麦肯锡风格" : "McKinsey Corporate", 
-      value: lang === 'zh' ? "高度专业，海军蓝和高级灰，严格对齐，数据驱动的层级结构。" : "Highly professional, navy blue and grey, strict alignment, data-driven hierarchy." 
-    },
-    { 
-      id: 16, 
-      label: lang === 'zh' ? "Google四原色" : "Google 4-Color", 
-      value: lang === 'zh' ? "干净的白色背景，搭配蓝、红、黄、绿的几何图形，现代科技感。" : "Clean white background with blue, red, yellow, green geometric shapes." 
-    },
-    { 
-      id: 17, 
-      label: lang === 'zh' ? "玻璃拟态" : "Glassmorphism", 
-      value: lang === 'zh' ? "半透明毛玻璃效果，鲜艳渐变背景，细腻光泽边框，悬浮元素。" : "Frosted glass effects, vibrant gradients, subtle borders, floating elements." 
-    },
-    { 
-      id: 18, 
-      label: lang === 'zh' ? "液态玻璃" : "Liquid Glass", 
-      value: lang === 'zh' ? "流动的 3D 形态，光泽折射材质，动态全息渐变。" : "Fluid 3D shapes, glossy refractive materials, dynamic holographic gradients." 
-    },
-    { 
-      id: 19, 
-      label: lang === 'zh' ? "可爱萌系" : "Cute & Moe", 
-      value: lang === 'zh' ? "圆润的 UI 元素，柔和糖果色，胖乎乎的吉祥物，活泼的字体。" : "Round UI elements, soft candy colors, chubby mascots, bubbly fonts." 
-    },
-    { 
-      id: 20, 
-      label: lang === 'zh' ? "北欧风" : "Nordic Minimalist", 
-      value: lang === 'zh' ? "中性色调，柔和大地色，木材和亚麻等原始纹理，极简美学。" : "Neutral tones, muted earth colors, raw textures like wood and linen, minimalist aesthetic." 
-    }
+    { id: 1, label: lang === 'zh' ? "吉卜力自然风" : "Ghibli Natural", value: lang === 'zh' ? "吉卜力动画风格，高饱和度的蓝天白云，茂密的绿色植被，手绘水彩质感。" : "Ghibli animation style, high saturation blue sky, lush green vegetation, hand-painted watercolor texture." },
+    { id: 2, label: lang === 'zh' ? "游戏任务地图" : "Game Quest Map", value: lang === 'zh' ? "ISO 2.5D 视角，游戏 UI 界面元素，任务节点路径，像素或矢量风格。" : "ISO 2.5D perspective, game UI elements, quest path, pixel or vector style." },
+    { id: 3, label: lang === 'zh' ? "漫画风格" : "Comic/Manga", value: lang === 'zh' ? "高对比度波普色彩，使用对话气泡、速度线、粗体大字强调关键词。" : "High contrast pop colors, using speech bubbles, speed lines, bold characters to emphasize keywords." },
+    { id: 4, label: lang === 'zh' ? "水彩风格" : "Watercolor", value: lang === 'zh' ? "柔和的水痕晕染，透明感，艺术气息，优雅的手绘外观。" : "Soft water stains, transparency, artistic atmosphere, elegant hand-painted look." },
+    { id: 5, label: lang === 'zh' ? "粉彩柔和" : "Pastel Soft", value: lang === 'zh' ? "低饱和度马卡龙色系，梦幻、轻盈、柔和的视觉感受。" : "Low saturation macaron colors, dreamy, light, and soft visual experience." },
+    { id: 6, label: lang === 'zh' ? "手绘插画" : "Hand-drawn", value: lang === 'zh' ? "温暖亲切，手绘风格图标和边框，自然不拘束的线条。" : "Warm and friendly, hand-drawn icons and borders, natural lines." },
+    { id: 7, label: lang === 'zh' ? "温暖疗愈" : "Warm & Healing", value: lang === 'zh' ? "大地色系，柔和的圆角，自然纹理，营造放松信任的氛围。" : "Earth tones, soft rounded corners, natural textures, trusting atmosphere." },
+    { id: 8, label: lang === 'zh' ? "日系漫画" : "Japanese Manga", value: lang === 'zh' ? "经典日系漫画风格，黑白网点，丰富情感表达，连续的分镜排版。" : "Classic manga style, monochrome screentones, expressive emotions, sequential panel layout." },
+    { id: 9, label: lang === 'zh' ? "复古怀旧" : "Retro Nostalgic", value: lang === 'zh' ? "低保真质感，80/90年代配色，复古衬线字体，胶片滤镜效果。" : "Lo-fi texture, 80s/90s color scheme, retro serif fonts, film filter effects." },
+    { id: 10, label: lang === 'zh' ? "活泼童趣" : "Playful & Childlike", value: lang === 'zh' ? "高饱和三原色，简单的几何图形，充满活力的涂鸦风格。" : "High saturation primary colors, simple geometric shapes, doodle style." },
+    { id: 11, label: lang === 'zh' ? "自然有机" : "Natural Organic", value: lang === 'zh' ? "再生纸纹理，植物元素，绿色和土色调，环保自然感。" : "Recycled paper texture, plant elements, green and earthy tones, eco-friendly feel." },
+    { id: 12, label: lang === 'zh' ? "赛博庞克" : "Cyberpunk", value: lang === 'zh' ? "霓虹对比色，深色背景，故障艺术，未来科技美学。" : "Neon contrast colors, dark background, Glitch Art, futuristic aesthetics." },
+    { id: 13, label: lang === 'zh' ? "扁平化设计" : "Flat Design", value: lang === 'zh' ? "无阴影，纯色色块，矢量图标，现代简洁的 UI 风格。" : "No shadows, solid color blocks, vector icons, modern UI style." },
+    { id: 14, label: lang === 'zh' ? "绘本治愈" : "Picture Book Therapy", value: lang === 'zh' ? "柔和色调，隐喻意象，专注于情感表达和故事性。" : "Soft tones, metaphorical imagery, focusing on emotional storytelling." },
+    { id: 15, label: lang === 'zh' ? "麦肯锡风格" : "McKinsey Corporate", value: lang === 'zh' ? "高度专业，海军蓝和高级灰，严格对齐，数据驱动的层级结构。" : "Highly professional, navy blue and grey, strict alignment, data-driven hierarchy." },
+    { id: 16, label: lang === 'zh' ? "Google四原色" : "Google 4-Color", value: lang === 'zh' ? "干净的白色背景，搭配蓝、红、黄、绿的几何图形，现代科技感。" : "Clean white background with blue, red, yellow, green geometric shapes." },
+    { id: 17, label: lang === 'zh' ? "玻璃拟态" : "Glassmorphism", value: lang === 'zh' ? "半透明毛玻璃效果，鲜艳渐变背景，细腻光泽边框，悬浮元素。" : "Frosted glass effects, vibrant gradients, subtle borders, floating elements." },
+    { id: 18, label: lang === 'zh' ? "液态玻璃" : "Liquid Glass", value: lang === 'zh' ? "流动的 3D 形态，光泽折射材质，动态全息渐变。" : "Fluid 3D shapes, glossy refractive materials, dynamic holographic gradients." },
+    { id: 19, label: lang === 'zh' ? "可爱萌系" : "Cute & Moe", value: lang === 'zh' ? "圆润的 UI 元素，柔和糖果色，胖乎乎的吉祥物，活泼的字体。" : "Round UI elements, soft candy colors, chubby mascots, bubbly fonts." },
+    { id: 20, label: lang === 'zh' ? "北欧风" : "Nordic Minimalist", value: lang === 'zh' ? "中性色调，柔和大地色，木材和亚麻等原始纹理，极简美学。" : "Neutral tones, muted earth colors, raw textures like wood and linen, minimalist aesthetic." }
   ];
   return presets;
 };
@@ -337,7 +282,7 @@ const getLayoutInstruction = (layoutStyle) => {
 
 // --- API Logic ---
 const generateWithGemini = async (config, language, apiKey) => {
-  const { styleDesc, pageCount, content, uploadedFile, includePersona, targetAudience, structureType, layoutStyle, customPersona, strictExtraction } = config;
+  const { styleDesc, pageCount, content, uploadedFile, includePersona, targetAudience, structureType, layoutStyle, customPersona, strictExtraction, addIntro, addQuestions, addInteraction, addConclusion } = config;
 
   if (!apiKey) throw new Error("API Key Missing");
 
@@ -378,6 +323,17 @@ const generateWithGemini = async (config, language, apiKey) => {
 - Summarize, refine, and optimize the source content into impactful bullet points suitable for a presentation. 
 - You are encouraged to paraphrase and improve the wording for better flow and visual impact, as long as the core meaning is preserved.`;
 
+  // --- Presentation Elements Logic ---
+  let elementsInstructions = [];
+  if (addIntro) elementsInstructions.push("- INCLUSION: The FIRST page MUST be an 'Intro/Hook (导入)', starting with a thought-provoking question to engage the audience based on the content.");
+  if (addQuestions) elementsInstructions.push("- INCLUSION: Integrate 'Thought-Provoking Questions (提问)' within the content pages to stimulate thinking before or after explaining concepts.");
+  if (addInteraction) elementsInstructions.push("- INCLUSION: Include 'Interactive Elements (互动)' to consolidate knowledge points (e.g., quick quiz, discussion prompt, reflection task).");
+  if (addConclusion) elementsInstructions.push("- INCLUSION: The FINAL page MUST be a 'Conclusion (结语)', providing a clear summary and review of the entire topic.");
+
+  let elementsPrompt = elementsInstructions.length > 0 
+      ? `\n    PRESENTATION ELEMENTS REQUESTED (MANDATORY):\n    ${elementsInstructions.join('\n    ')}\n    *Note: Even if STRICT TEXT FIDELITY is enabled, formulate these interactions/questions STRICTLY around the exact concepts found in the source text.*` 
+      : "";
+
   const systemPrompt = `
     You are a professional Presentation Designer and AI Art Director.
     Your task is to deeply analyze the user's source content and transform it into a structured presentation outline.
@@ -387,6 +343,7 @@ const generateWithGemini = async (config, language, apiKey) => {
     2. DESIGN STYLE: "${styleDesc}". You MUST translate this requested style into a cohesive 'globalStyle' and apply it conceptually to every 'visualElements'.
     3. STRUCTURE MODE: ${structureType} (${structureInstruction}). The way you extract, logically group, and present the Source Content MUST strictly follow this narrative or data structure.
     4. LAYOUT RULE: ${layoutStyle} (${layoutInstruction}). Every page's 'layoutDesign' must be dictated by this specific layout system.
+    ${elementsPrompt}
 
     Output MUST be valid JSON with this structure:
     {
@@ -399,7 +356,7 @@ const generateWithGemini = async (config, language, apiKey) => {
         {
           "page": 1,
           "title": "Page Title",
-          "corePoints": "Extracted key points based on Structure Mode.",
+          "corePoints": "Extracted key points based on Structure Mode. If this page serves an Intro/Question/Interaction/Conclusion purpose, format it appropriately.",
           "visualElements": "Description of visual elements in ${langInstruction}.",
           "layoutDesign": "Specific layout instructions following the Layout Rule"
         }
@@ -721,6 +678,16 @@ const InputStep = ({ config, updateConfig, onGenerate, isGenerating, t, language
   const structureOptions = GET_STRUCTURE_OPTIONS(language, t);
   const layoutOptions = GET_LAYOUT_OPTIONS(language, t);
 
+  // 简报特殊元素与约束选项定义
+  const presentationElements = [
+    { id: 'addIntro', label: t.elementIntro, desc: t.elementIntroDesc, icon: <Play className="w-4 h-4" />, color: "border-sky-500 bg-sky-50 text-sky-700 ring-sky-500" },
+    { id: 'addQuestions', label: t.elementQuestions, desc: t.elementQuestionsDesc, icon: <HelpCircle className="w-4 h-4" />, color: "border-indigo-500 bg-indigo-50 text-indigo-700 ring-indigo-500" },
+    { id: 'addInteraction', label: t.elementInteraction, desc: t.elementInteractionDesc, icon: <Zap className="w-4 h-4" />, color: "border-amber-500 bg-amber-50 text-amber-700 ring-amber-500" },
+    { id: 'addConclusion', label: t.elementConclusion, desc: t.elementConclusionDesc, icon: <Flag className="w-4 h-4" />, color: "border-emerald-500 bg-emerald-50 text-emerald-700 ring-emerald-500" },
+    { id: 'includePersona', label: t.includePersona, desc: t.elementPersonaDesc, icon: <UserCircle2 className="w-4 h-4" />, color: "border-violet-500 bg-violet-50 text-violet-700 ring-violet-500" },
+    { id: 'strictExtraction', label: t.strictExtractionLabel, desc: t.elementStrictDesc, icon: <Quote className="w-4 h-4" />, color: "border-rose-500 bg-rose-50 text-rose-700 ring-rose-500" }
+  ];
+
   const handleFileClick = () => {
     fileInputRef.current.click();
   };
@@ -864,77 +831,65 @@ const InputStep = ({ config, updateConfig, onGenerate, isGenerating, t, language
               />
             </div>
 
-            {/* 开关设定组 */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
-                {/* 个人形象融合设定 */}
-                <div className="flex flex-col">
-                    <div 
-                        onClick={() => updateConfig('includePersona', !config.includePersona)}
-                        className={`flex items-center gap-4 p-5 rounded-xl border cursor-pointer transition-all duration-200 ${
-                            config.includePersona 
-                            ? 'bg-violet-50 border-violet-200 shadow-sm' 
-                            : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50'
-                        }`}
-                    >
-                        <div className={`flex-shrink-0 w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-colors ${
-                            config.includePersona 
-                            ? 'bg-violet-600 border-violet-600' 
-                            : 'bg-white border-slate-300'
-                        }`}>
-                            {config.includePersona && <Check className="w-4 h-4 text-white stroke-[3]" />}
-                        </div>
-                        <div>
-                            <div className="flex items-center gap-2">
-                                <UserCircle2 className={`w-5 h-5 ${config.includePersona ? 'text-violet-600' : 'text-slate-500'}`} />
-                                <h4 className={`text-sm font-bold ${config.includePersona ? 'text-violet-900' : 'text-slate-700'}`}>
-                                    {t.includePersona}
-                                </h4>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    {/* 自定义角色输入框 */}
-                    {config.includePersona && (
-                        <div className="mt-3 pl-12 animate-fade-in-up">
-                            <label className="block text-xs font-semibold text-slate-500 mb-1">{t.customPersonaLabel}</label>
-                            <input 
-                                type="text" 
-                                value={config.customPersona || ''}
-                                onChange={(e) => updateConfig('customPersona', e.target.value)}
-                                placeholder={t.customPersonaPlaceholder}
-                                className="w-full p-3 text-sm bg-violet-50/50 border border-violet-100 rounded-xl text-slate-700 placeholder:text-slate-400 focus:ring-2 focus:ring-violet-500 focus:bg-white transition-all outline-none shadow-inner"
-                            />
-                        </div>
-                    )}
+            {/* 简报特殊元素与约束 (多选) */}
+            <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
+                    <Layers className="w-4 h-4 text-violet-500" />
+                    {t.presentationElementsLabel}
+                </label>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    {presentationElements.map((element) => {
+                        const isSelected = config[element.id];
+                        return (
+                            <button
+                                key={element.id}
+                                onClick={() => updateConfig(element.id, !isSelected)}
+                                className={`flex flex-col items-start p-3 rounded-xl border transition-all text-left ${
+                                    isSelected
+                                    ? element.color + " shadow-sm ring-1 ring-offset-1 ring-transparent"
+                                    : "bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50"
+                                }`}
+                            >
+                                <div className="flex items-center gap-2 mb-1 w-full">
+                                    {/* 独立的打勾方块 */}
+                                    <div className={`w-4 h-4 rounded-sm border flex items-center justify-center transition-colors flex-shrink-0 ${
+                                        isSelected ? 'bg-white border-slate-400 text-slate-700' : 'border-slate-300 text-transparent bg-white'
+                                    }`}>
+                                        <Check className="w-3 h-3 stroke-[4]" />
+                                    </div>
+                                    {/* 图标与标题 */}
+                                    <div className={`flex items-center gap-1.5 ${isSelected ? 'text-current' : 'text-slate-700'}`}>
+                                        <span className={isSelected ? 'opacity-80' : 'text-slate-400'}>{element.icon}</span>
+                                        <h3 className="text-sm font-bold">
+                                            {element.label}
+                                        </h3>
+                                    </div>
+                                </div>
+                                {/* 描述文字，左侧留出对齐空间 */}
+                                <p className={`text-[10px] leading-relaxed mt-1 pl-6 ${isSelected ? 'text-current opacity-80' : 'text-slate-500'}`}>
+                                    {element.desc}
+                                </p>
+                            </button>
+                        );
+                    })}
                 </div>
 
-                {/* 严格忠于原文设定 */}
-                <div className="flex flex-col">
-                    <div 
-                        onClick={() => updateConfig('strictExtraction', !config.strictExtraction)}
-                        className={`flex items-center gap-4 p-5 rounded-xl border cursor-pointer transition-all duration-200 ${
-                            config.strictExtraction 
-                            ? 'bg-violet-50 border-violet-200 shadow-sm' 
-                            : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50'
-                        }`}
-                    >
-                        <div className={`flex-shrink-0 w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-colors ${
-                            config.strictExtraction 
-                            ? 'bg-violet-600 border-violet-600' 
-                            : 'bg-white border-slate-300'
-                        }`}>
-                            {config.strictExtraction && <Check className="w-4 h-4 text-white stroke-[3]" />}
-                        </div>
-                        <div>
-                            <div className="flex items-center gap-2">
-                                <Quote className={`w-5 h-5 ${config.strictExtraction ? 'text-violet-600' : 'text-slate-500'}`} />
-                                <h4 className={`text-sm font-bold ${config.strictExtraction ? 'text-violet-900' : 'text-slate-700'}`}>
-                                    {t.strictExtractionLabel}
-                                </h4>
-                            </div>
-                        </div>
+                {/* 动态显示的自定义角色输入框 */}
+                {config.includePersona && (
+                    <div className="mt-4 p-4 bg-violet-50/50 border border-violet-100 rounded-xl animate-fade-in-up">
+                        <label className="block text-xs font-semibold text-slate-600 mb-2 flex items-center gap-2">
+                            <UserCircle2 className="w-4 h-4 text-violet-500" />
+                            {t.customPersonaLabel}
+                        </label>
+                        <input 
+                            type="text" 
+                            value={config.customPersona || ''}
+                            onChange={(e) => updateConfig('customPersona', e.target.value)}
+                            placeholder={t.customPersonaPlaceholder}
+                            className="w-full p-3 text-sm bg-white border border-violet-200 rounded-lg text-slate-700 placeholder:text-slate-400 focus:ring-2 focus:ring-violet-500 transition-all outline-none shadow-sm"
+                        />
                     </div>
-                </div>
+                )}
             </div>
 
             {/* Content Section Header */}
@@ -1400,10 +1355,14 @@ export default function App() {
       uploadedFile: null,
       includePersona: false,
       customPersona: "", // 存储自定义角色
-      strictExtraction: false, // 新增开关状态
+      strictExtraction: false, 
+      addIntro: false,        // 新增：导入开关
+      addQuestions: false,    // 新增：提问开关
+      addInteraction: false,  // 新增：互动开关
+      addConclusion: false,   // 新增：结语开关
       targetAudience: "" ,
-      structureType: 'keypoint', // Default structure
-      layoutStyle: 'traditional' // Default layout
+      structureType: 'keypoint', 
+      layoutStyle: 'traditional' 
   });
   const [resultData, setResultData] = useState(null);
 
