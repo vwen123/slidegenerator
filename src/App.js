@@ -81,7 +81,7 @@ const TRANSLATIONS = {
     targetAudiencePlaceholder: "例如：初中学生、潜在投资人、公司高层管理...",
     pageCount: "预计页数",
     contentLabel: "2. 输入内容或上传资料",
-    contentPlaceholder: "请贴上您的课文、演讲稿或大纲。AI 将严格提取原文重点，不随意篡改词意...",
+    contentPlaceholder: "请贴上您的课文、演讲稿或大纲",
     uploadLabel: "上传参考图片或 PDF (选填)",
     uploadButton: "选择档案 (图片/PDF)",
     uploadHint: "提示：如果是图片，AI 也可提取核心重点并分析视觉风格！",
@@ -152,7 +152,7 @@ const TRANSLATIONS = {
     targetAudiencePlaceholder: "E.g., Junior students, Potential Investors, C-Level Execs...",
     pageCount: "Estimated Pages",
     contentLabel: "2. Content Source",
-    contentPlaceholder: "Paste your source text here. AI will strictly extract points without altering the original vocabulary...",
+    contentPlaceholder: "Paste your text, speech, or outline here",
     uploadLabel: "Upload Reference Image or PDF (Optional)",
     uploadButton: "Choose File (Image/PDF)",
     uploadHint: "Tip: AI can extract core points from images and analyze visual style!",
@@ -185,26 +185,106 @@ const TRANSLATIONS = {
 // --- Style Presets ---
 const GET_STYLE_PRESETS = (lang) => {
   const presets = [
-    { id: 1, label: lang === 'zh' ? "吉卜力自然风" : "Ghibli Natural", value: "Ghibli animation style, high saturation blue sky, lush green vegetation, hand-painted watercolor texture." },
-    { id: 2, label: lang === 'zh' ? "游戏任务地图" : "Game Quest Map", value: "ISO 2.5D perspective, game UI elements, quest path, pixel or vector style." },
-    { id: 3, label: lang === 'zh' ? "漫画风格" : "Comic/Manga", value: "High contrast pop colors, using speech bubbles, speed lines, bold characters to emphasize keywords." },
-    { id: 4, label: lang === 'zh' ? "水彩风格" : "Watercolor", value: "Soft water stains, transparency, artistic atmosphere, elegant hand-painted look." },
-    { id: 5, label: lang === 'zh' ? "粉彩柔和" : "Pastel Soft", value: "Low saturation macaron colors, dreamy, light, and soft visual experience." },
-    { id: 6, label: lang === 'zh' ? "手绘插画" : "Hand-drawn", value: "Warm and friendly, hand-drawn icons and borders, natural lines." },
-    { id: 7, label: lang === 'zh' ? "温暖疗愈" : "Warm & Healing", value: "Earth tones, soft rounded corners, natural textures, trusting atmosphere." },
-    { id: 8, label: lang === 'zh' ? "日系漫画" : "Japanese Manga", value: "Classic manga style, monochrome screentones, expressive emotions, sequential panel layout." },
-    { id: 9, label: lang === 'zh' ? "复古怀旧" : "Retro Nostalgic", value: "Lo-fi texture, 80s/90s color scheme, retro serif fonts, film filter effects." },
-    { id: 10, label: lang === 'zh' ? "活泼童趣" : "Playful & Childlike", value: "High saturation primary colors, simple geometric shapes, doodle style." },
-    { id: 11, label: lang === 'zh' ? "自然有机" : "Natural Organic", value: "Recycled paper texture, plant elements, green and earthy tones, eco-friendly feel." },
-    { id: 12, label: lang === 'zh' ? "赛博庞克" : "Cyberpunk", value: "Neon contrast colors, dark background, Glitch Art, futuristic aesthetics." },
-    { id: 13, label: lang === 'zh' ? "扁平化设计" : "Flat Design", value: "No shadows, solid color blocks, vector icons, modern UI style." },
-    { id: 14, label: lang === 'zh' ? "绘本治愈" : "Picture Book Therapy", value: "Soft tones, metaphorical imagery, focusing on emotional storytelling." },
-    { id: 15, label: lang === 'zh' ? "麦肯锡风格" : "McKinsey Corporate", value: "Highly professional, navy blue and grey, strict alignment, data-driven hierarchy." },
-    { id: 16, label: lang === 'zh' ? "Google四原色" : "Google 4-Color", value: "Clean white background with blue, red, yellow, green geometric shapes." },
-    { id: 17, label: lang === 'zh' ? "玻璃拟态" : "Glassmorphism", value: "Frosted glass effects, vibrant gradients, subtle borders, floating elements." },
-    { id: 18, label: lang === 'zh' ? "液态玻璃" : "Liquid Glass", value: "Fluid 3D shapes, glossy refractive materials, dynamic holographic gradients." },
-    { id: 19, label: lang === 'zh' ? "可爱萌系" : "Cute & Moe", value: "Round UI elements, soft candy colors, chubby mascots, bubbly fonts." },
-    { id: 20, label: lang === 'zh' ? "北欧风" : "Nordic Minimalist", value: "Neutral tones, muted earth colors, raw textures like wood and linen, minimalist aesthetic." }
+    { 
+      id: 1, 
+      label: lang === 'zh' ? "吉卜力自然风" : "Ghibli Natural", 
+      value: lang === 'zh' ? "吉卜力动画风格，高饱和度的蓝天白云，茂密的绿色植被，手绘水彩质感。" : "Ghibli animation style, high saturation blue sky, lush green vegetation, hand-painted watercolor texture." 
+    },
+    { 
+      id: 2, 
+      label: lang === 'zh' ? "游戏任务地图" : "Game Quest Map", 
+      value: lang === 'zh' ? "ISO 2.5D 视角，游戏 UI 界面元素，任务节点路径，像素或矢量风格。" : "ISO 2.5D perspective, game UI elements, quest path, pixel or vector style." 
+    },
+    { 
+      id: 3, 
+      label: lang === 'zh' ? "漫画风格" : "Comic/Manga", 
+      value: lang === 'zh' ? "高对比度波普色彩，使用对话气泡、速度线、粗体大字强调关键词。" : "High contrast pop colors, using speech bubbles, speed lines, bold characters to emphasize keywords." 
+    },
+    { 
+      id: 4, 
+      label: lang === 'zh' ? "水彩风格" : "Watercolor", 
+      value: lang === 'zh' ? "柔和的水痕晕染，透明感，艺术气息，优雅的手绘外观。" : "Soft water stains, transparency, artistic atmosphere, elegant hand-painted look." 
+    },
+    { 
+      id: 5, 
+      label: lang === 'zh' ? "粉彩柔和" : "Pastel Soft", 
+      value: lang === 'zh' ? "低饱和度马卡龙色系，梦幻、轻盈、柔和的视觉感受。" : "Low saturation macaron colors, dreamy, light, and soft visual experience." 
+    },
+    { 
+      id: 6, 
+      label: lang === 'zh' ? "手绘插画" : "Hand-drawn", 
+      value: lang === 'zh' ? "温暖亲切，手绘风格图标和边框，自然不拘束的线条。" : "Warm and friendly, hand-drawn icons and borders, natural lines." 
+    },
+    { 
+      id: 7, 
+      label: lang === 'zh' ? "温暖疗愈" : "Warm & Healing", 
+      value: lang === 'zh' ? "大地色系，柔和的圆角，自然纹理，营造放松信任的氛围。" : "Earth tones, soft rounded corners, natural textures, trusting atmosphere." 
+    },
+    { 
+      id: 8, 
+      label: lang === 'zh' ? "日系漫画" : "Japanese Manga", 
+      value: lang === 'zh' ? "经典日系漫画风格，黑白网点，丰富情感表达，连续的分镜排版。" : "Classic manga style, monochrome screentones, expressive emotions, sequential panel layout." 
+    },
+    { 
+      id: 9, 
+      label: lang === 'zh' ? "复古怀旧" : "Retro Nostalgic", 
+      value: lang === 'zh' ? "低保真质感，80/90年代配色，复古衬线字体，胶片滤镜效果。" : "Lo-fi texture, 80s/90s color scheme, retro serif fonts, film filter effects." 
+    },
+    { 
+      id: 10, 
+      label: lang === 'zh' ? "活泼童趣" : "Playful & Childlike", 
+      value: lang === 'zh' ? "高饱和三原色，简单的几何图形，充满活力的涂鸦风格。" : "High saturation primary colors, simple geometric shapes, doodle style." 
+    },
+    { 
+      id: 11, 
+      label: lang === 'zh' ? "自然有机" : "Natural Organic", 
+      value: lang === 'zh' ? "再生纸纹理，植物元素，绿色和土色调，环保自然感。" : "Recycled paper texture, plant elements, green and earthy tones, eco-friendly feel." 
+    },
+    { 
+      id: 12, 
+      label: lang === 'zh' ? "赛博庞克" : "Cyberpunk", 
+      value: lang === 'zh' ? "霓虹对比色，深色背景，故障艺术，未来科技美学。" : "Neon contrast colors, dark background, Glitch Art, futuristic aesthetics." 
+    },
+    { 
+      id: 13, 
+      label: lang === 'zh' ? "扁平化设计" : "Flat Design", 
+      value: lang === 'zh' ? "无阴影，纯色色块，矢量图标，现代简洁的 UI 风格。" : "No shadows, solid color blocks, vector icons, modern UI style." 
+    },
+    { 
+      id: 14, 
+      label: lang === 'zh' ? "绘本治愈" : "Picture Book Therapy", 
+      value: lang === 'zh' ? "柔和色调，隐喻意象，专注于情感表达和故事性。" : "Soft tones, metaphorical imagery, focusing on emotional storytelling." 
+    },
+    { 
+      id: 15, 
+      label: lang === 'zh' ? "麦肯锡风格" : "McKinsey Corporate", 
+      value: lang === 'zh' ? "高度专业，海军蓝和高级灰，严格对齐，数据驱动的层级结构。" : "Highly professional, navy blue and grey, strict alignment, data-driven hierarchy." 
+    },
+    { 
+      id: 16, 
+      label: lang === 'zh' ? "Google四原色" : "Google 4-Color", 
+      value: lang === 'zh' ? "干净的白色背景，搭配蓝、红、黄、绿的几何图形，现代科技感。" : "Clean white background with blue, red, yellow, green geometric shapes." 
+    },
+    { 
+      id: 17, 
+      label: lang === 'zh' ? "玻璃拟态" : "Glassmorphism", 
+      value: lang === 'zh' ? "半透明毛玻璃效果，鲜艳渐变背景，细腻光泽边框，悬浮元素。" : "Frosted glass effects, vibrant gradients, subtle borders, floating elements." 
+    },
+    { 
+      id: 18, 
+      label: lang === 'zh' ? "液态玻璃" : "Liquid Glass", 
+      value: lang === 'zh' ? "流动的 3D 形态，光泽折射材质，动态全息渐变。" : "Fluid 3D shapes, glossy refractive materials, dynamic holographic gradients." 
+    },
+    { 
+      id: 19, 
+      label: lang === 'zh' ? "可爱萌系" : "Cute & Moe", 
+      value: lang === 'zh' ? "圆润的 UI 元素，柔和糖果色，胖乎乎的吉祥物，活泼的字体。" : "Round UI elements, soft candy colors, chubby mascots, bubbly fonts." 
+    },
+    { 
+      id: 20, 
+      label: lang === 'zh' ? "北欧风" : "Nordic Minimalist", 
+      value: lang === 'zh' ? "中性色调，柔和大地色，木材和亚麻等原始纹理，极简美学。" : "Neutral tones, muted earth colors, raw textures like wood and linen, minimalist aesthetic." 
+    }
   ];
   return presets;
 };
