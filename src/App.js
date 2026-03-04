@@ -193,102 +193,102 @@ const GET_STYLE_PRESETS = (lang) => {
     { 
       id: 1, 
       label: lang === 'zh' ? "吉卜力自然风" : "Ghibli Natural", 
-      value: lang === 'zh' ? "吉卜力动画风格，高饱和度的蓝天白云，茂密的绿色植被，手绘水彩质感。" : "Ghibli animation style, high saturation blue sky, lush green vegetation, hand-painted watercolor texture." 
+      value: lang === 'zh' ? "吉卜力动画风格 (Ghibli animation style)，高饱和度的蓝天白云 (high saturation blue sky)，茂密的绿色植被 (lush green vegetation)，手绘水彩质感 (hand-painted watercolor texture)。" : "Ghibli animation style, high saturation blue sky, lush green vegetation, hand-painted watercolor texture." 
     },
     { 
       id: 2, 
       label: lang === 'zh' ? "游戏任务地图" : "Game Quest Map", 
-      value: lang === 'zh' ? "ISO 2.5D 视角，游戏 UI 界面元素，任务节点路径，像素或矢量风格。" : "ISO 2.5D perspective, game UI elements, quest path, pixel or vector style." 
+      value: lang === 'zh' ? "ISO 2.5D 视角 (isometric perspective)，游戏 UI 界面元素 (game UI elements)，任务节点路径 (quest path)，像素或矢量风格 (pixel or vector style)。" : "ISO 2.5D perspective, game UI elements, quest path, pixel or vector style." 
     },
     { 
       id: 3, 
       label: lang === 'zh' ? "漫画风格" : "Comic/Manga", 
-      value: lang === 'zh' ? "高对比度波普色彩，使用对话气泡、速度线、粗体大字强调关键词。" : "High contrast pop colors, using speech bubbles, speed lines, bold characters to emphasize keywords." 
+      value: lang === 'zh' ? "高对比度波普色彩 (pop colors)，使用对话气泡 (speech bubbles)、速度线 (speed lines)、粗体大字 (bold characters) 强调关键词。" : "High contrast pop colors, using speech bubbles, speed lines, bold characters to emphasize keywords." 
     },
     { 
       id: 4, 
       label: lang === 'zh' ? "水彩风格" : "Watercolor", 
-      value: lang === 'zh' ? "柔和的水痕晕染，透明感，艺术气息，优雅的手绘外观。" : "Soft water stains, transparency, artistic atmosphere, elegant hand-painted look." 
+      value: lang === 'zh' ? "柔和的水痕晕染 (water stains)，透明感 (transparency)，艺术气息，优雅的手绘外观 (elegant hand-painted look)。" : "Soft water stains, transparency, artistic atmosphere, elegant hand-painted look." 
     },
     { 
       id: 5, 
       label: lang === 'zh' ? "粉彩柔和" : "Pastel Soft", 
-      value: lang === 'zh' ? "低饱和度马卡龙色系，梦幻、轻盈、柔和的视觉感受。" : "Low saturation macaron colors, dreamy, light, and soft visual experience." 
+      value: lang === 'zh' ? "低饱和度马卡龙色系 (pastel / macaron colors)，梦幻、轻盈、柔和的视觉感受 (soft visual experience)。" : "Low saturation macaron colors, dreamy, light, and soft visual experience." 
     },
     { 
       id: 6, 
       label: lang === 'zh' ? "手绘插画" : "Hand-drawn", 
-      value: lang === 'zh' ? "温暖亲切，手绘风格图标和边框，自然不拘束的线条。" : "Warm and friendly, hand-drawn icons and borders, natural lines." 
+      value: lang === 'zh' ? "温暖亲切，手绘风格图标和边框 (hand-drawn icons and borders)，自然不拘束的线条 (natural lines)。" : "Warm and friendly, hand-drawn icons and borders, natural lines." 
     },
     { 
       id: 7, 
       label: lang === 'zh' ? "温暖疗愈" : "Warm & Healing", 
-      value: lang === 'zh' ? "大地色系，柔和的圆角，自然纹理，营造放松信任的氛围。" : "Earth tones, soft rounded corners, natural textures, trusting atmosphere." 
+      value: lang === 'zh' ? "大地色系 (earth tones)，柔和的圆角 (soft rounded corners)，自然纹理 (natural textures)，营造放松信任的氛围。" : "Earth tones, soft rounded corners, natural textures, trusting atmosphere." 
     },
     { 
       id: 8, 
       label: lang === 'zh' ? "日系漫画" : "Japanese Manga", 
-      value: lang === 'zh' ? "经典日系漫画风格，黑白网点，丰富情感表达，连续的分镜排版。" : "Classic manga style, monochrome screentones, expressive emotions, sequential panel layout." 
+      value: lang === 'zh' ? "经典日系漫画风格 (Classic manga style)，黑白网点 (monochrome screentones)，丰富情感表达，连续的分镜排版 (sequential panel layout)。" : "Classic manga style, monochrome screentones, expressive emotions, sequential panel layout." 
     },
     { 
       id: 9, 
       label: lang === 'zh' ? "复古怀旧" : "Retro Nostalgic", 
-      value: lang === 'zh' ? "低保真质感，80/90年代配色，复古衬线字体，胶片滤镜效果。" : "Lo-fi texture, 80s/90s color scheme, retro serif fonts, film filter effects." 
+      value: lang === 'zh' ? "低保真质感 (Lo-fi texture)，80/90年代配色 (80s/90s color scheme)，复古衬线字体 (retro serif fonts)，胶片滤镜效果 (film filter effects)。" : "Lo-fi texture, 80s/90s color scheme, retro serif fonts, film filter effects." 
     },
     { 
       id: 10, 
       label: lang === 'zh' ? "活泼童趣" : "Playful & Childlike", 
-      value: lang === 'zh' ? "高饱和三原色，简单的几何图形，充满活力的涂鸦风格。" : "High saturation primary colors, simple geometric shapes, doodle style." 
+      value: lang === 'zh' ? "高饱和三原色 (primary colors)，简单的几何图形 (geometric shapes)，充满活力的涂鸦风格 (doodle style)。" : "High saturation primary colors, simple geometric shapes, doodle style." 
     },
     { 
       id: 11, 
       label: lang === 'zh' ? "自然有机" : "Natural Organic", 
-      value: lang === 'zh' ? "再生纸纹理，植物元素，绿色和土色调，环保自然感。" : "Recycled paper texture, plant elements, green and earthy tones, eco-friendly feel." 
+      value: lang === 'zh' ? "再生纸纹理 (Recycled paper texture)，植物元素 (plant elements)，绿色和土色调 (green and earthy tones)，环保自然感。" : "Recycled paper texture, plant elements, green and earthy tones, eco-friendly feel." 
     },
     { 
       id: 12, 
       label: lang === 'zh' ? "赛博庞克" : "Cyberpunk", 
-      value: lang === 'zh' ? "霓虹对比色，深色背景，故障艺术，未来科技美学。" : "Neon contrast colors, dark background, Glitch Art, futuristic aesthetics." 
+      value: lang === 'zh' ? "霓虹对比色 (Neon contrast colors)，深色背景 (dark background)，故障艺术 (Glitch Art)，未来科技美学 (futuristic aesthetics)。" : "Neon contrast colors, dark background, Glitch Art, futuristic aesthetics." 
     },
     { 
       id: 13, 
       label: lang === 'zh' ? "扁平化设计" : "Flat Design", 
-      value: lang === 'zh' ? "无阴影，纯色色块，矢量图标，现代简洁的 UI 风格。" : "No shadows, solid color blocks, vector icons, modern UI style." 
+      value: lang === 'zh' ? "无阴影 (No shadows)，纯色色块 (solid color blocks)，矢量图标 (vector icons)，现代简洁的 UI 风格 (modern UI style)。" : "No shadows, solid color blocks, vector icons, modern UI style." 
     },
     { 
       id: 14, 
       label: lang === 'zh' ? "绘本治愈" : "Picture Book Therapy", 
-      value: lang === 'zh' ? "柔和色调，隐喻意象，专注于情感表达和故事性。" : "Soft tones, metaphorical imagery, focusing on emotional storytelling." 
+      value: lang === 'zh' ? "柔和色调 (Soft tones)，隐喻意象 (metaphorical imagery)，专注于情感表达和故事性 (emotional storytelling)。" : "Soft tones, metaphorical imagery, focusing on emotional storytelling." 
     },
     { 
       id: 15, 
       label: lang === 'zh' ? "麦肯锡风格" : "McKinsey Corporate", 
-      value: lang === 'zh' ? "高度专业，海军蓝和高级灰，严格对齐，数据驱动的层级结构。" : "Highly professional, navy blue and grey, strict alignment, data-driven hierarchy." 
+      value: lang === 'zh' ? "高度专业，海军蓝和高级灰 (navy blue and grey)，严格对齐 (strict alignment)，数据驱动的层级结构 (data-driven hierarchy)。" : "Highly professional, navy blue and grey, strict alignment, data-driven hierarchy." 
     },
     { 
       id: 16, 
       label: lang === 'zh' ? "Google四原色" : "Google 4-Color", 
-      value: lang === 'zh' ? "干净的白色背景，搭配蓝、红、黄、绿的几何图形，现代科技感。" : "Clean white background with blue, red, yellow, green geometric shapes." 
+      value: lang === 'zh' ? "干净的白色背景 (Clean white background)，搭配蓝、红、黄、绿的 Google品牌色几何图形 (Google 4-Color geometric shapes)，现代科技感。" : "Clean white background with blue, red, yellow, green geometric shapes." 
     },
     { 
       id: 17, 
       label: lang === 'zh' ? "玻璃拟态" : "Glassmorphism", 
-      value: lang === 'zh' ? "半透明毛玻璃效果，鲜艳渐变背景，细腻光泽边框，悬浮元素。" : "Frosted glass effects, vibrant gradients, subtle borders, floating elements." 
+      value: lang === 'zh' ? "半透明毛玻璃效果 (Frosted glass effects)，鲜艳渐变背景 (vibrant gradients)，细腻光泽边框 (subtle borders)，悬浮元素 (floating elements)。" : "Frosted glass effects, vibrant gradients, subtle borders, floating elements." 
     },
     { 
       id: 18, 
       label: lang === 'zh' ? "液态玻璃" : "Liquid Glass", 
-      value: lang === 'zh' ? "流动的 3D 形态，光泽折射材质，动态全息渐变。" : "Fluid 3D shapes, glossy refractive materials, dynamic holographic gradients." 
+      value: lang === 'zh' ? "流动的 3D 形态 (Fluid 3D shapes)，光泽折射材质 (glossy refractive materials)，动态全息渐变 (dynamic holographic gradients)。" : "Fluid 3D shapes, glossy refractive materials, dynamic holographic gradients." 
     },
     { 
       id: 19, 
       label: lang === 'zh' ? "可爱萌系" : "Cute & Moe", 
-      value: lang === 'zh' ? "圆润的 UI 元素，柔和糖果色，胖乎乎的吉祥物，活泼的字体。" : "Round UI elements, soft candy colors, chubby mascots, bubbly fonts." 
+      value: lang === 'zh' ? "圆润的 UI 元素 (Round UI elements)，柔和糖果色 (soft candy colors)，胖乎乎的吉祥物 (chubby mascots)，活泼的字体 (bubbly fonts)。" : "Round UI elements, soft candy colors, chubby mascots, bubbly fonts." 
     },
     { 
       id: 20, 
       label: lang === 'zh' ? "北欧风" : "Nordic Minimalist", 
-      value: lang === 'zh' ? "中性色调，柔和大地色，木材和亚麻等原始纹理，极简美学。" : "Neutral tones, muted earth colors, raw textures like wood and linen, minimalist aesthetic." 
+      value: lang === 'zh' ? "中性色调 (Neutral tones)，柔和大地色 (muted earth colors)，木材和亚麻等原始纹理 (raw textures like wood and linen)，极简美学 (minimalist aesthetic)。" : "Neutral tones, muted earth colors, raw textures like wood and linen, minimalist aesthetic." 
     }
   ];
   return presets;
@@ -367,9 +367,9 @@ const generateWithGemini = async (config, language, apiKey) => {
   let personaPrompt = "DISABLED.";
   if (includePersona) {
       if (customPersona && customPersona.trim() !== "") {
-           personaPrompt = `ENABLED. You MUST use the user's specific custom character: "${customPersona}". It MUST NOT be the main focus. The Global Style description MUST end with: '页面角落加入专属角色（${customPersona}）作为点缀与搭衬，不喧宾夺主。角色保持一致，贯穿始终。依内容语意仅微调其动作或小道具。' In 'visualElements' for each page, briefly describe this EXACT SAME character's subtle pose or prop.`;
+           personaPrompt = `ENABLED. You MUST use the user's specific custom character: "${customPersona}". The 'globalStyle.content' MUST end EXACTLY with this sentence: '页面角落加入专属角色（${customPersona}）作为点缀与搭衬，不喧宾夺主。依内容语意微调角色的表情或小道具。保持从头到尾角色一样。' In 'visualElements' for each page, briefly describe this EXACT SAME character's subtle pose or prop.`;
       } else {
-           personaPrompt = `ENABLED. Invent ONE specific, consistent character. The Global Style description MUST end with: '根据简报内容量身定制了一个专属角色（并在括号内注明具体形象，例如：一只戴单片眼镜的侦探狗）。在页面角落加入此小尺寸角色作为点缀与搭衬，不喧宾夺主。角色保持一致，贯穿始终。依内容语意仅微调其动作或小道具。' In 'visualElements' for each page, briefly describe this EXACT SAME character's subtle pose or prop.`;
+           personaPrompt = `ENABLED. Invent ONE specific, consistent character. The 'globalStyle.content' MUST end EXACTLY with this sentence: '页面角落加入小尺寸的角色（并在括号内注明具体发明形象，例如：一只戴单片眼镜的侦探狗）作为点缀与搭衬，不喧宾夺主。依内容语意微调角色的表情或小道具。保持从头到尾角色一样。' In 'visualElements' for each page, briefly describe this EXACT SAME character's subtle pose or prop.`;
       }
   }
 
@@ -389,7 +389,7 @@ const generateWithGemini = async (config, language, apiKey) => {
 
     CORE ANALYTICAL FRAMEWORK (You MUST filter the content through these 4 pillars):
     1. TARGET AUDIENCE: "${targetAudience || "General Audience"}". The depth, tone, and visual appeal MUST be specifically tailored for them.
-    2. DESIGN STYLE: "${styleDesc}". You MUST translate this requested style into a cohesive 'globalStyle' and apply it conceptually to every 'visualElements'.
+    2. DESIGN STYLE: "${styleDesc}". You MUST translate this requested style into a highly detailed, professional 'globalStyle'.
     3. STRUCTURE MODE: ${structureType} (${structureInstruction}). The way you extract, logically group, and present the Source Content MUST strictly follow this narrative or data structure.
     4. LAYOUT RULE: ${layoutStyle} (${layoutInstruction}). Every page's 'layoutDesign' must be dictated by this specific layout system.
 
@@ -397,8 +397,8 @@ const generateWithGemini = async (config, language, apiKey) => {
     {
       "topic": "Creative Main Title based on source",
       "globalStyle": {
-        "title": "Style Name",
-        "content": "Detailed description of colors, fonts, and mood."
+        "title": "Creative & Catchy Style Theme Name (e.g., 活力几何科技风)",
+        "content": "A highly detailed, professional, and rich description (approx 80-120 words) of the visual design system. It MUST strictly incorporate the requested Design Style. It MUST describe: 1. Background color, 2. Primary accent colors (e.g., brand colors), 3. Typography/Font choices, 4. Layout philosophy (e.g., whitespace, geometric composition), and 5. Graphic element style (e.g., flat icons). DO NOT be plain. Example tone: '本风格以纯净的白色为底，搭配Google品牌色（蓝、红、黄、绿）作为主要点缀色，营造出现代、亲切的科技感。字体选用现代无衬线字体，确保极佳的可读性。版面设计强调几何构图、大量留白和清晰的视觉层级...图形元素采用...'"
       },
       "pages": [
         {
